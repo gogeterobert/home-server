@@ -34,7 +34,7 @@
               requests:
                 memory: "4Gi"
                 cpu: "1000m"
-              limit:
+              limits:
                 memory: "4Gi"
                 cpu: "2000m"
             readinessProbe:
