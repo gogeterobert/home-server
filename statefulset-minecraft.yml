@@ -72,3 +72,16 @@
       selector:
         app: mc-example
       type: NodePort
+---
+    apiVersion: v1
+    kind: PersistentVolume
+    metadata:
+      name: data-mc-example-pv
+    spec:
+      capacity:
+        storage: 5Gi
+      accessModes:
+        - ReadWriteOnce
+      hostPath:
+        path: "/mnt/data/mc-example"
+      persistentVolumeReclaimPolicy: Retain
