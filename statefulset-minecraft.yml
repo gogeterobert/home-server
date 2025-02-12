@@ -23,10 +23,10 @@
             env:
               - name: EULA
                 value: "TRUE"
-              - name: MEMORY
-                value: ""
-              - name: JVM_XX_OPTS
-                value: "-XX:MaxRAMPercentage=75"
+              - name: INIT_MEMORY
+                value: "1G"
+              - name: MAX_MEMORY
+                value: "4G"
             volumeMounts:
               - mountPath: /data
                 name: data
