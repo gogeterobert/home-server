@@ -13,6 +13,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Validate Secrets
+        run: |
+          [ -z "${{ secrets.SERVER_IP }}" ] && exit 1
+          [ -z "${{ secrets.SERVER_USER }}" ] && exit 1
+          [ -z "${{ secrets.SERVER_PASSWORD }}" ] && exit 1
+
       - name: Install Ansible
         run: sudo apt update && sudo apt install -y ansible
 
