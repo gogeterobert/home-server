@@ -1,0 +1,15 @@
+- name: Check if K3s is already installed
+  stat:
+    path: /usr/local/bin/k3s
+  register: k3s_installed
+
+- name: Download and install K3s
+  shell: curl -sfL https://get.k3s.io | sh -
+  when: not k3s_installed.stat.exists
+
+- name: Ensure KUBECONFIG is set
+  shell: |
+    mkdir -p ~/.kube
+    cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+    chown {{ ansible_user }}:{{ ansible_user }} ~/.kube/config
+    export KUBECONFIG=~/.kube/config
