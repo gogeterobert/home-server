@@ -26,4 +26,6 @@ jobs:
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
         run: |
+          echo "[servers]" > inventory.ini
+          echo "k3s-master ansible_host=${{ secrets.SERVER_IP }} ansible_user=${{ secrets.SERVER_USER }} ansible_ssh_pass=${{ secrets.SERVER_PASSWORD }}" >> inventory.ini
           ansible-playbook -i inventory.ini playbook.yml
