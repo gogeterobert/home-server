@@ -1,0 +1,12 @@
+- name: Deploy Kubernetes and Cockpit
+  hosts: servers
+  become: yes
+  tasks:
+    - name: Include K3s installation
+      ansible.builtin.import_playbook: install-k3s.yml
+
+    - name: Include Cockpit installation
+      ansible.builtin.import_playbook: install-cockpit.yml
+
+    - name: Include Kubernetes manifests deployment
+      ansible.builtin.import_playbook: deploy-manifests.yml

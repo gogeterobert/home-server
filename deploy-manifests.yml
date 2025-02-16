@@ -1,0 +1,14 @@
+- name: Deploy K3s Manifests
+  hosts: servers
+  become: yes
+  tasks:
+    - name: Copy K3s manifests to the remote server
+      ansible.builtin.copy:
+        src: k3s-manifests/
+        dest: /var/lib/rancher/k3s/server/manifests/
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Apply K3s Manifests
+      command: kubectl apply -f /var/lib/rancher/k3s/server/manifests/

@@ -1,0 +1,21 @@
+- name: Install Cockpit
+  hosts: servers
+  become: yes
+  tasks:
+    - name: Install Cockpit and related packages
+      ansible.builtin.apt:
+        name:
+          - cockpit
+          - cockpit-networkmanager
+          - cockpit-packagekit
+          - cockpit-storaged
+          - cockpit-system
+          - cockpit-dashboard
+        state: present
+        update_cache: yes
+
+    - name: Ensure Cockpit service is enabled and running
+      ansible.builtin.systemd:
+        name: cockpit
+        enabled: yes
+        state: started

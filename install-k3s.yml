@@ -1,0 +1,15 @@
+- name: Install K3s
+  hosts: servers
+  become: yes
+  tasks:
+    - name: Install required dependencies
+      ansible.builtin.apt:
+        name: curl
+        state: present
+        update_cache: yes
+
+    - name: Install K3s
+      ansible.builtin.shell: |
+        curl -sfL https://get.k3s.io | sh -
+      args:
+        executable: /bin/bash
