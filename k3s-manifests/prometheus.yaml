@@ -4,6 +4,7 @@ metadata:
   name: prometheus
   namespace: monitoring
 spec:
+  image: quay.io/prometheus/prometheus:v2.22.1
   serviceAccountName: prometheus
   serviceMonitorSelector: {}
   resources:
