@@ -11,5 +11,11 @@
       command: kubectl create namespace monitoring
       when: namespace_check.rc != 0
 
-    - name: Deploy Prometheus Operator
-      command: kubectl apply -f https://github.com/prometheus-operator/prometheus-operator/releases/latest/download/bundle.yaml
+    - name: Add Helm repositories
+      command: helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+    - name: Update Helm repositories
+      command: helm repo update
+
+    - name: Install Prometheus Operator
+      command: helm install prometheus-operator prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
