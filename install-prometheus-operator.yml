@@ -3,7 +3,7 @@
   become: yes
   tasks:
     - name: Create monitoring namespace
-      command: kubectl create namespace monitoring -o yaml
+      command: kubectl create namespace monitoring
 
     - name: Deploy Prometheus Operator
       command: kubectl apply -f https://github.com/prometheus-operator/prometheus-operator/releases/latest/download/bundle.yaml -n monitoring
