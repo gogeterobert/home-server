@@ -11,7 +11,6 @@
       unarchive:
         src: /tmp/helm-v3.10.0-linux-amd64.tar.gz
         dest: /usr/local/bin/
-        remote_src: yes
 
     - name: Ensure Helm is installed
       command: helm version
