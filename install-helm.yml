@@ -7,11 +7,15 @@
         prefix: helm_
       register: helm_tmp_dir
 
-    - name: Download and extract Helm
+    - name: Download Helm archive
+      get_url:
+        url: "https://get.helm.sh/helm-v3.10.0-linux-amd64.tar.gz"
+        dest: "{{ helm_tmp_dir.path }}/helm.tar.gz"
+
+    - name: Extract Helm archive
       unarchive:
-        src: "https://get.helm.sh/helm-v3.10.0-linux-amd64.tar.gz"
+        src: "{{ helm_tmp_dir.path }}/helm.tar.gz"
         dest: "{{ helm_tmp_dir.path }}"
-        remote_src: yes
         creates: "{{ helm_tmp_dir.path }}/linux-amd64/helm"
 
     - name: Find helm directory
@@ -33,3 +37,8 @@
       command: helm version
       register: helm_version
       failed_when: helm_version.rc != 0
+
+    - name: Remove temporary directory
+      file:
+        path: "{{ helm_tmp_dir.path }}"
+        state: absent
