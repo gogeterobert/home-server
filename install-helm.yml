@@ -16,7 +16,6 @@
       unarchive:
         src: "{{ helm_tmp_dir.path }}/helm-v3.10.0-linux-amd64.tar.gz"
         dest: "{{ helm_tmp_dir.path }}"
-        remote_src: yes
         creates: "{{ helm_tmp_dir.path }}/linux-amd64/helm"
 
     - name: Find helm directory
