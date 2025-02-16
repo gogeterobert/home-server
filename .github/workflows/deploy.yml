@@ -1,4 +1,4 @@
-name: Deploy K3s with Ansible
+name: Deploy K3s with Ansible and install manifests
 
 on:
   push:
