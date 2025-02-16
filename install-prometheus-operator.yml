@@ -11,11 +11,7 @@
       command: kubectl create namespace monitoring
       when: namespace_check.rc != 0
 
-    - name: Add Helm repositories
-      command: helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-
-    - name: Update Helm repositories
-      command: helm repo update
-
-    - name: Install Prometheus Operator
-      command: helm install prometheus-operator prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
+    - name: Install Prometheus CRDs
+      command: kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/example/prometheus-operator-crd.yaml
+      register: crd_apply
+      failed_when: crd_apply.rc != 0
