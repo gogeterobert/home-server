@@ -2,11 +2,32 @@
   hosts: servers
   become: yes
   tasks:
+    - name: Create temporary directory
+      tempfile:
+        prefix: helm_
+      register: helm_tmp_dir
+
     - name: Download and extract Helm
       unarchive:
-        src: https://get.helm.sh/helm-v3.10.0-linux-amd64.tar.gz
-        dest: /usr/local/bin/
+        src: "https://get.helm.sh/helm-v3.10.0-linux-amd64.tar.gz"
+        dest: "{{ helm_tmp_dir.path }}"
         remote_src: yes
+        creates: "{{ helm_tmp_dir.path }}/linux-amd64/helm"
+
+    - name: Find helm directory
+      find:
+        paths: "{{ helm_tmp_dir.path }}"
+        patterns: "linux-*"
+        file_type: directory
+      register: helm_dir
+
+    - name: Move helm executable
+      command: mv "{{ helm_dir.files[0].path }}/helm" /usr/local/bin/
+
+    - name: Set helm executable permissions
+      file:
+        path: /usr/local/bin/helm
+        mode: 0755
 
     - name: Ensure Helm is installed
       command: helm version
