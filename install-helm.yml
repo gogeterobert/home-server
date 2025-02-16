@@ -5,6 +5,7 @@
     - name: Create temporary directory
       tempfile:
         prefix: helm_
+        state: directory
       register: helm_tmp_dir
 
     - name: Download Helm archive
