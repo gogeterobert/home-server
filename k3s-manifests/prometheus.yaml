@@ -17,3 +17,8 @@ spec:
         resources:
           requests:
             storage: 5Gi
+  scrapeConfigs:
+    - job_name: "cockpit-pcp"
+      metrics_path: "/metrics"
+      static_configs:
+        - targets: ["nostalgiagame.go.ro.default.svc.cluster.local:44322"]
