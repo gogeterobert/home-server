@@ -19,3 +19,28 @@
         name: cockpit
         enabled: yes
         state: started
+
+    - name: Enable and start pmcd (Performance Metrics Collector Daemon)
+      ansible.builtin.systemd:
+        name: pmcd
+        enabled: yes
+        state: started
+
+    - name: Enable and start pmproxy (for Prometheus export)
+      ansible.builtin.systemd:
+        name: pmproxy
+        enabled: yes
+        state: started
+
+    - name: Ensure pmproxy is listening on all interfaces
+      ansible.builtin.lineinfile:
+        path: /etc/pcp/pmproxy/pmproxy.options
+        line: "-l :44322"
+        create: yes
+      notify: Restart pmproxy
+
+  handlers:
+    - name: Restart pmproxy
+      ansible.builtin.systemd:
+        name: pmproxy
+        state: restarted
