@@ -10,7 +10,6 @@
           - cockpit-packagekit
           - cockpit-storaged
           - cockpit-system
-          - cockpit-dashboard
         state: present
         update_cache: yes
 
