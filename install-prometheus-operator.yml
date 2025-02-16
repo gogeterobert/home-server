@@ -13,5 +13,3 @@
 
     - name: Install Prometheus CRDs
       command: kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/master/bundle.yaml
-      register: crd_apply
-      failed_when: crd_apply.rc != 0
