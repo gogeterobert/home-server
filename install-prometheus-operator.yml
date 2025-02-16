@@ -2,8 +2,14 @@
   hosts: servers
   become: yes
   tasks:
-    - name: Create monitoring namespace
+    - name: Check if monitoring namespace exists
+      command: kubectl get namespace monitoring
+      register: namespace_check
+      ignore_errors: yes
+
+    - name: Create monitoring namespace if not exists
       command: kubectl create namespace monitoring
+      when: namespace_check.rc != 0
 
     - name: Deploy Prometheus Operator
       command: kubectl apply -f https://github.com/prometheus-operator/prometheus-operator/releases/latest/download/bundle.yaml -n monitoring
