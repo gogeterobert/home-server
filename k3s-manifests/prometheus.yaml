@@ -3,6 +3,8 @@ kind: Prometheus
 metadata:
   name: prometheus
   namespace: monitoring
+  labels:
+    prometheus: prometheus
 spec:
   image: quay.io/prometheus/prometheus:v2.22.1
   serviceAccountName: prometheus
@@ -33,4 +35,4 @@ spec:
       protocol: TCP
       port: 9090
       targetPort: 9090
-      nodePort: 30090  # Change this if needed
+      nodePort: 30090
