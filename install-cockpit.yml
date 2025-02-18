@@ -2,6 +2,16 @@
   hosts: servers
   become: yes
   tasks:
+    - name: Check if Cockpit and related packages are installed
+      ansible.builtin.command: "dpkg-query -W -f='${Status}' cockpit"
+      register: cockpit_check
+      changed_when: false
+      failed_when: cockpit_check.rc not in [0, 1]
+
+    - name: Set fact for Cockpit installation
+      ansible.builtin.set_fact:
+        cockpit_installed: "{{ 'installed' in cockpit_check.stdout }}"
+
     - name: Install Cockpit and related packages
       ansible.builtin.apt:
         name:
@@ -13,24 +23,35 @@
           - cockpit-pcp
         state: present
         update_cache: yes
+      when: not cockpit_installed
+
+    - name: Check if Cockpit service is running
+      ansible.builtin.systemd:
+        name: cockpit
+      register: cockpit_service
+      changed_when: false
+      failed_when: false
 
     - name: Ensure Cockpit service is enabled and running
       ansible.builtin.systemd:
         name: cockpit
         enabled: yes
         state: started
+      when: cockpit_service.status is not defined or cockpit_service.status.SubState != "running"
 
-    - name: Enable and start pmcd (Performance Metrics Collector Daemon)
+    - name: Check if pmproxy is running
       ansible.builtin.systemd:
-        name: pmcd
-        enabled: yes
-        state: started
+        name: pmproxy
+      register: pmproxy_service
+      changed_when: false
+      failed_when: false
 
     - name: Enable and start pmproxy (for Prometheus export)
       ansible.builtin.systemd:
         name: pmproxy
         enabled: yes
         state: started
+      when: pmproxy_service.status is not defined or pmproxy_service.status.SubState != "running"
 
     - name: Ensure pmproxy is listening on all interfaces
       ansible.builtin.lineinfile:
@@ -38,10 +59,3 @@
         line: "-l :44322"
         create: yes
       notify: Restart pmproxy
-
-# //TODO WHAT DOES THIS DO
-  handlers:
-    - name: Restart pmproxy
-      ansible.builtin.systemd:
-        name: pmproxy
-        state: restarted
