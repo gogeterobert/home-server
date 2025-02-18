@@ -1,15 +1,22 @@
-- name: Install K3s
-  hosts: servers
-  become: yes
-  tasks:
-    - name: Install required dependencies
-      ansible.builtin.apt:
-        name: curl
-        state: present
-        update_cache: yes
+  - name: Install K3s
+    hosts: servers
+    become: yes
+    tasks:
+      - name: Install required dependencies
+        ansible.builtin.apt:
+          name: curl
+          state: present
+          update_cache: yes
 
-    - name: Install K3s
-      ansible.builtin.shell: |
-        curl -sfL https://get.k3s.io | sh -
-      args:
-        executable: /bin/bash
+      - name: Check if K3s is already installed
+        ansible.builtin.command: k3s --version
+        register: k3s_installed
+        ignore_errors: yes
+        changed_when: false
+
+      - name: Install K3s if not already installed
+        ansible.builtin.shell: |
+          curl -sfL https://get.k3s.io | sh -
+        args:
+          executable: /bin/bash
+        when: k3s_installed.rc != 0
