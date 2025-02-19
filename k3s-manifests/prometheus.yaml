@@ -36,6 +36,11 @@ spec:
           volumeMounts:
             - name: prometheus-config
               mountPath: /etc/prometheus
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
       volumes:
         - name: prometheus-config
           configMap:
@@ -72,6 +77,9 @@ data:
       - job_name: "prometheus"
         static_configs:
           - targets: ["localhost:9090"]
+      - job_name: 'cockpit-pmproxy'
+        static_configs:
+          - targets: ['${NODE_IP}:44322']
 
 ---
 # Grafana Deployment
