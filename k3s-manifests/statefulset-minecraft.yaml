@@ -69,6 +69,7 @@
       ports:
         - port: 25565
           targetPort: 25565
+          nodePort: 31285
       selector:
         app: mc-example
       type: NodePort
