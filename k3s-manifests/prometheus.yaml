@@ -50,8 +50,7 @@ metadata:
   namespace: monitoring
 spec:
   selector:
-    matchLabels:
-      app: prometheus
+    app: prometheus
   type: NodePort
   ports:
     - port: 80
@@ -85,6 +84,13 @@ spec:
   replicas: 1
   selector:
     matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
         - name: grafana
           image: grafana/grafana:10.0.0
           ports:
@@ -96,13 +102,6 @@ spec:
             requests:
               memory: "128Mi"
               cpu: "125m"
-        app: grafana
-    spec:
-      containers:
-        - name: grafana
-          image: grafana/grafana:10.0.0
-          ports:
-            - containerPort: 3000
 
 ---
 # Grafana Service (Exposed on NodePort 30090)
@@ -113,8 +112,7 @@ metadata:
   namespace: monitoring
 spec:
   selector:
-    matchLabels:
-      app: grafana
+    app: grafana
   type: NodePort
   ports:
     - port: 80
