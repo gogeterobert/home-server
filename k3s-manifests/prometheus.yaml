@@ -79,7 +79,7 @@ data:
           - targets: ["localhost:9090"]
       - job_name: 'cockpit-pmproxy'
         static_configs:
-          - targets: ['${NODE_IP}:44322']
+          - targets: ['host.docker.internal:44322']
 
 ---
 # Grafana Deployment
