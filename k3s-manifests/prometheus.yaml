@@ -71,4 +71,4 @@ data:
           - targets: ['nostalgiagame.go.ro:9100']
       - job_name: 'cadvisor'
         static_configs:
-          - targets: ['kubelet.default.svc.cluster.local:10250']
+          - targets: ['nostalgiagame.go.ro:10250']
