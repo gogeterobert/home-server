@@ -27,11 +27,11 @@ spec:
               memory: "256Mi"
               cpu: "250m"
           volumeMounts:
-            - name: prometheus-config
-              mountPath: /etc/prometheus/prometheus.yml
+            - name: config-volume
+              mountPath: /etc/prometheus/
               subPath: prometheus.yml
       volumes:
-        - name: prometheus-config
+        - name: config-volume
           configMap:
             name: prometheus-config
 
