@@ -72,9 +72,9 @@ data:
       - job_name: "prometheus"
         static_configs:
           - targets: ["localhost:9090"]
-      - job_name: 'cockpit-pmproxy'
+      - job_name: 'node-exporter'
         static_configs:
-          - targets: ['nostalgiagame.go.ro:44322']
+          - targets: ['nostalgiagame.go.ro:9100']
 
 ---
 # Grafana Deployment

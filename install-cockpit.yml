@@ -38,24 +38,3 @@
         enabled: yes
         state: started
       when: cockpit_service.status is not defined or cockpit_service.status.SubState != "running"
-
-    - name: Check if pmproxy is running
-      ansible.builtin.systemd:
-        name: pmproxy
-      register: pmproxy_service
-      changed_when: false
-      failed_when: false
-
-    - name: Enable and start pmproxy (for Prometheus export)
-      ansible.builtin.systemd:
-        name: pmproxy
-        enabled: yes
-        state: started
-      when: pmproxy_service.status is not defined or pmproxy_service.status.SubState != "running"
-
-    - name: Ensure pmproxy is listening on all interfaces
-      ansible.builtin.lineinfile:
-        path: /etc/pcp/pmproxy/pmproxy.options
-        line: "-l :44322"
-        create: yes
-      notify: Restart pmproxy
