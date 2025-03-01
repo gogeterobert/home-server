@@ -70,5 +70,8 @@ data:
         static_configs:
           - targets: ['nostalgiagame.go.ro:9100']
       - job_name: 'cadvisor'
+        scheme: https
+        tls_config:
+          insecure_skip_verify: true
         static_configs:
           - targets: ['nostalgiagame.go.ro:10250']
