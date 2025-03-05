@@ -1,39 +1,4 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ollama
-  labels:
-    app: ollama
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: ollama
-  template:
-    metadata:
-      labels:
-        app: ollama
-    spec:
-      containers:
-      - name: ollama-container
-        image: ollama/ollama:latest
-        ports:
-        - containerPort: 11434
-        resources:
-          requests:
-            memory: "2Gi"
-            cpu: "2"
-          limits:
-            memory: "4Gi"
-            cpu: "4"
-        volumeMounts:
-        - name: model-storage
-          mountPath: /models
-      volumes:
-      - name: model-storage
-        persistentVolumeClaim:
-          claimName: ollama-pvc
----
+# PersistentVolumeClaims for data storage (replaces Docker volumes)
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -43,17 +8,71 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: 10Gi  # Allocates 20GB for Ollama data
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: open-webui-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi  # Allocates 20GB for Open WebUI data
+---
+# Deployment (replaces `docker run -d --restart always --name open-webui`)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: open-webui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: open-webui
+  template:
+    metadata:
+      labels:
+        app: open-webui
+    spec:
+      containers:
+      - name: open-webui
+        image: ghcr.io/open-webui/open-webui:ollama
+        ports:
+        - containerPort: 8080  # Port the app listens on inside the container
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "2"
+          limits:
+            memory: "4Gi"
+            cpu: "4"
+        volumeMounts:
+        - name: ollama-storage
+          mountPath: /root/.ollama  # Mounts PVC to Ollama's config path
+        - name: open-webui-storage
+          mountPath: /app/backend/data  # Mounts PVC to Open WebUI's data path
+      volumes:
+      - name: ollama-storage
+        persistentVolumeClaim:
+          claimName: ollama-pvc
+      - name: open-webui-storage
+        persistentVolumeClaim:
+          claimName: open-webui-pvc
+---
+
+# Service (replaces `-p 3000:8080`)
 apiVersion: v1
 kind: Service
 metadata:
-  name: ollama-service
+  name: open-webui-service
 spec:
+  type: NodePort  # Exposes the service on a cluster node port
   selector:
-    app: ollama
+    app: open-webui
   ports:
-  - protocol: TCP
-    port: 11434
-    targetPort: 11434
-  type: NodePort
+    - protocol: TCP
+      port: 8080      # Service port (cluster-internal)
+      targetPort: 8080  # Container port (matches `containerPort: 8080`)
+      nodePort: 30000  # Externally accessible port (default range: 30000-32767)
