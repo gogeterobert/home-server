@@ -17,7 +17,7 @@
         mode: "0644"
 
     - name: Apply K3s Manifests
-      command: kubectl apply -f "{{ temp_dir.path }}/" --prune
+      command: kubectl apply -f "{{ temp_dir.path }}/" --prune --all
 
     - name: Remove temporary directory
       ansible.builtin.file:
