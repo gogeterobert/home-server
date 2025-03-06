@@ -8,7 +8,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 15Gi  # Allocates 20GB for Ollama data
+      storage: 10Gi  # Allocates 20GB for Ollama data
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
