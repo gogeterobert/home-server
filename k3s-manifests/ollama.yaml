@@ -8,7 +8,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi  # Allocates 20GB for Ollama data
+      storage: 15Gi  # Allocates 20GB for Ollama data
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -46,7 +46,7 @@ spec:
             memory: "2Gi"
             cpu: "2"
           limits:
-            memory: "4Gi"
+            memory: "8Gi"
             cpu: "4"
         volumeMounts:
         - name: ollama-storage
