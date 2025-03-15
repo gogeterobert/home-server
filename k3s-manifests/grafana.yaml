@@ -51,7 +51,7 @@ spec:
             - >
               curl -s https://grafana.com/api/dashboards/1860/revisions/latest/download -o /var/lib/grafana/dashboards/node-exporter-full.json
           volumeMounts:
-            - name: grafana-dashboards
+            - name: grafana-dashboard-provisioning
               mountPath: /var/lib/grafana/dashboards
       containers:
         - name: grafana
@@ -76,7 +76,7 @@ spec:
             claimName: grafana-pvc
         - name: grafana-dashboard-provisioning
           configMap:
-            name: grafana-dashboard-provisioning
+            name: grafana-dashboards-pvc
 
 
 ---
