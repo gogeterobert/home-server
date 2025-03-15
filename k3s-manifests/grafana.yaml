@@ -29,6 +29,78 @@ spec:
   hostPath:
     path: /mnt/data/grafana-dashboards  # Ensure this path exists or adjust accordingly
 
+
+---
+# Persistent Volume Claims for Grafana
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-pvc
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: local-path
+
+---
+# Persistent Volume Claims for dashboards
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-dashboards-pvc
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 256Mi
+  storageClassName: local-path
+
+
+# Grafana provisioning dashboards
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-provisioning
+  namespace: monitoring
+data:
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: "default"
+        orgId: 1
+        type: file
+        disableDeletion: false
+        editable: true
+        updateIntervalSeconds: 10
+        options:
+          path: "/var/lib/grafana/dashboards"
+
+
+# Grafana data source Prometheus
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource
+  namespace: monitoring
+data:
+  prometheus.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus.monitoring.svc.cluster.local:9090
+        isDefault: true
+        editable: true
+
+
 ---
 # Grafana Deployment
 apiVersion: apps/v1
@@ -88,36 +160,6 @@ spec:
             name: grafana-datasource
 
 ---
-# Persistent Volume Claims for Grafana
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: grafana-pvc
-  namespace: monitoring
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: local-path
-
----
-# Persistent Volume Claims for dashboards
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: grafana-dashboards-pvc
-  namespace: monitoring
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 256Mi
-  storageClassName: local-path
-
----
 # Grafana Service (Exposed on NodePort 30090)
 apiVersion: v1
 kind: Service
@@ -132,41 +174,3 @@ spec:
     - port: 80
       targetPort: 3000
       nodePort: 30090
-
-# Grafana data source Prometheus
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: grafana-datasource
-  namespace: monitoring
-data:
-  prometheus.yaml: |
-    apiVersion: 1
-    datasources:
-      - name: Prometheus
-        type: prometheus
-        access: proxy
-        url: http://prometheus.monitoring.svc.cluster.local:9090
-        isDefault: true
-        editable: true
-
-# Grafana provisioning dashboards
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: grafana-dashboard-provisioning
-  namespace: monitoring
-data:
-  dashboards.yaml: |
-    apiVersion: 1
-    providers:
-      - name: "default"
-        orgId: 1
-        type: file
-        disableDeletion: false
-        editable: true
-        updateIntervalSeconds: 10
-        options:
-          path: "/var/lib/grafana/dashboards"
