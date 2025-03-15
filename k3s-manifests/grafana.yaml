@@ -92,7 +92,7 @@ data:
       - name: Prometheus
         type: prometheus
         access: proxy
-        url: http://prometheus.monitoring.svc.cluster.local:9090
+        url: http://nostalgiagame.go.ro:30091
         isDefault: true
         editable: true
 
