@@ -68,7 +68,7 @@ data:
   prometheus.yaml: |
     apiVersion: 1
     datasources:
-      - name: Prometheus
+      - name: prometheus
         type: prometheus
         access: proxy
         url: http://nostalgiagame.go.ro:30091
