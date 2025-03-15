@@ -1,29 +1,33 @@
 ---
-# Persistent Volume Claim for Grafana
+# Persistent Volume for Grafana
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: grafana-pvc
+  name: grafana-pv
   namespace: monitoring
 spec:
+  capacity:
+    storage: 1Gi  # Adjust as needed
   accessModes:
     - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi  # Adjust as needed
+  storageClassName: local-path
+  hostPath:
+    path: /mnt/data/grafana  # Ensure this path exists or adjust accordingly
 
-# Persistent volume claim for dashboards
+# Persistent Volume for dashboards
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: grafana-dashboards-pvc
+  name: grafana-dashboards-pv
   namespace: monitoring
 spec:
+  capacity:
+    storage: 256Mi
   accessModes:
     - ReadWriteOnce
-  resources:
-    requests:
-      storage: 256Mi
+  storageClassName: local-path
+  hostPath:
+    path: /mnt/data/grafana-dashboards  # Ensure this path exists or adjust accordingly
 
 ---
 # Grafana Deployment
@@ -83,6 +87,35 @@ spec:
           configMap:
             name: grafana-datasource
 
+---
+# Persistent Volume Claims for Grafana
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-pvc
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: local-path
+
+---
+# Persistent Volume Claims for dashboards
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-dashboards-pvc
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 256Mi
+  storageClassName: local-path
 
 ---
 # Grafana Service (Exposed on NodePort 30090)
@@ -100,7 +133,7 @@ spec:
       targetPort: 3000
       nodePort: 30090
 
-# Grafana data source prometheus
+# Grafana data source Prometheus
 ---
 apiVersion: v1
 kind: ConfigMap
