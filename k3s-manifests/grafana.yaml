@@ -55,7 +55,7 @@ spec:
               mountPath: /var/lib/grafana/dashboards
       containers:
         - name: grafana
-          image: grafana/grafana
+          image: grafana/grafana:latest
           ports:
             - containerPort: 3000
           resources:
