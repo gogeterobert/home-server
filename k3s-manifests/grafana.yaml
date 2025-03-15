@@ -57,6 +57,27 @@ spec:
       storage: 256Mi
 
 
+# Grafana provisioning dashboards
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-provisioning
+  namespace: monitoring
+data:
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: "default"
+        orgId: 1
+        type: file
+        disableDeletion: false
+        editable: true
+        updateIntervalSeconds: 10
+        options:
+          path: "/var/lib/grafana/dashboards"
+
+
 # Grafana data source Prometheus
 ---
 apiVersion: v1
