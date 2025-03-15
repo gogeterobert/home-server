@@ -10,7 +10,6 @@ spec:
     storage: 1Gi  # Adjust as needed
   accessModes:
     - ReadWriteOnce
-  storageClassName: local-path
   hostPath:
     path: /mnt/data/grafana  # Ensure this path exists or adjust accordingly
 
@@ -25,7 +24,6 @@ spec:
     storage: 256Mi
   accessModes:
     - ReadWriteOnce
-  storageClassName: local-path
   hostPath:
     path: /mnt/data/grafana-dashboards  # Ensure this path exists or adjust accordingly
 
@@ -43,7 +41,6 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  storageClassName: local-path
 
 ---
 # Persistent Volume Claims for dashboards
@@ -58,7 +55,6 @@ spec:
   resources:
     requests:
       storage: 256Mi
-  storageClassName: local-path
 
 
 # Grafana provisioning dashboards
