@@ -1,7 +1,7 @@
 ---
 # Persistent Volume Claim for Grafana
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: PersistentVolume
 metadata:
   name: grafana-pvc
   namespace: monitoring
@@ -14,7 +14,7 @@ spec:
 
 # Persistent volume claim for dashboards
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: PersistentVolume
 metadata:
   name: grafana-dashboards-pvc
   namespace: monitoring
