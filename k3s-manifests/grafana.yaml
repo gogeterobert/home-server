@@ -70,13 +70,18 @@ spec:
               mountPath: /var/lib/grafana
             - name: grafana-dashboard-provisioning
               mountPath: /etc/grafana/provisioning/dashboards
+            - name: grafana-datasource-provisioning
+              mountPath: /etc/grafana/provisioning/datasources
       volumes:
         - name: grafana-storage
           persistentVolumeClaim:
             claimName: grafana-pvc
         - name: grafana-dashboard-provisioning
+          persistentVolumeClaim:
+            claimName: grafana-dashboards-pvc
+        - name: grafana-datasource-provisioning
           configMap:
-            name: grafana-dashboards-pvc
+            name: grafana-datasource
 
 
 ---
