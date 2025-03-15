@@ -49,10 +49,10 @@ spec:
             - "/bin/sh"
             - "-c"
             - >
-              curl -s https://grafana.com/api/dashboards/1860/revisions/latest/download -o /etc/grafana/provisioning/dashboards/node-exporter-full.json
+              curl -s https://grafana.com/api/dashboards/1860/revisions/latest/download -o /var/lib/grafana/dashboards/node-exporter-full.json
           volumeMounts:
             - name: grafana-dashboard-provisioning
-              mountPath: /etc/grafana/provisioning/dashboards
+              mountPath: /var/lib/grafana/dashboards
       containers:
         - name: grafana
           image: grafana/grafana
@@ -69,7 +69,7 @@ spec:
             - name: grafana-storage
               mountPath: /var/lib/grafana
             - name: grafana-dashboard-provisioning
-              mountPath: /etc/grafana/provisioning/dashboards
+              mountPath: /var/lib/grafana/dashboards
             - name: grafana-datasource-provisioning
               mountPath: /etc/grafana/provisioning/datasources
       volumes:
