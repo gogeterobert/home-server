@@ -121,10 +121,13 @@ spec:
             - "/bin/sh"
             - "-c"
             - >
-              curl -s https://grafana.com/api/dashboards/1860/revisions/latest/download -o /etc/grafana/provisioning/dashboards/node-exporter-full.json
+              curl -s https://grafana.com/api/dashboards/1860/revisions/latest/download -o /etc/grafana/provisioning/dashboards/node-exporter-full.json;
+              cp /config/dashboards.yaml /etc/grafana/provisioning/dashboards/dashboards.yaml
           volumeMounts:
             - name: grafana-dashboards
               mountPath: /etc/grafana/provisioning/dashboards
+            - name: grafana-dashboard-provisioning
+              mountPath: /config
       containers:
         - name: grafana
           image: grafana/grafana:latest
@@ -151,8 +154,7 @@ spec:
           persistentVolumeClaim:
             claimName: grafana-pvc
         - name: grafana-dashboards
-          persistentVolumeClaim:
-            claimName: grafana-dashboards-pvc
+          emptyDir: {}
         - name: grafana-dashboard-provisioning
           configMap:
             name: grafana-dashboard-provisioning
