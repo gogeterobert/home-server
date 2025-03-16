@@ -121,10 +121,10 @@ spec:
             - "/bin/sh"
             - "-c"
             - >
-              curl -s https://grafana.com/api/dashboards/1860/revisions/latest/download -o /var/lib/grafana/dashboards/node-exporter-full.json
+              curl -s https://grafana.com/api/dashboards/1860/revisions/latest/download -o /etc/grafana/provisioning/dashboards/node-exporter-full.json
           volumeMounts:
             - name: grafana-dashboards
-              mountPath: /var/lib/grafana/dashboards
+              mountPath: /etc/grafana/provisioning/dashboards
       containers:
         - name: grafana
           image: grafana/grafana:latest
