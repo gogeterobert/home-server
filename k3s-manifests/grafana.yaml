@@ -150,7 +150,7 @@ spec:
             claimName: grafana-pvc
         - name: grafana-dashboard-provisioning
           configMap:
-            claimName: grafana-dashboard-provisioning
+            name: grafana-dashboard-provisioning
         - name: grafana-datasource-provisioning
           configMap:
             name: grafana-datasource
