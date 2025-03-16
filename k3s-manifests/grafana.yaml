@@ -75,7 +75,7 @@ data:
         editable: true
         updateIntervalSeconds: 10
         options:
-          path: "/var/lib/grafana/dashboards"
+          path: "/etc/grafana/provisioning/dashboards"
 
 
 # Grafana data source Prometheus
@@ -144,7 +144,6 @@ spec:
               mountPath: /var/lib/grafana/dashboards
             - name: grafana-dashboard-provisioning
               mountPath: /etc/grafana/provisioning/dashboards
-              subPath: dashboards.yaml
             - name: grafana-datasource-provisioning
               mountPath: /etc/grafana/provisioning/datasources
       volumes:
