@@ -149,8 +149,8 @@ spec:
           persistentVolumeClaim:
             claimName: grafana-pvc
         - name: grafana-dashboard-provisioning
-          persistentVolumeClaim:
-            claimName: grafana-dashboards-pvc
+          configMap:
+            claimName: grafana-dashboard-provisioning
         - name: grafana-datasource-provisioning
           configMap:
             name: grafana-datasource
