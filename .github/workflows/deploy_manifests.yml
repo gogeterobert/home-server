@@ -21,11 +21,6 @@ jobs:
         run: sudo apt install -y ansible
 
       - name: Run Ansible Playbook
-        env:
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-          CF_API_KEY: ${{ secrets.CF_API_KEY }}
         run: |
           echo "[servers]" > inventory.ini
           echo "k3s-master ansible_host=${{ secrets.SERVER_IP }} ansible_user=${{ secrets.SERVER_USER }} ansible_ssh_pass=${{ secrets.SERVER_PASSWORD }} ansible_become_pass=${{ secrets.SERVER_PASSWORD }}" >> inventory.ini
