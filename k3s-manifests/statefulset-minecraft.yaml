@@ -23,20 +23,31 @@
             env:
               - name: EULA
                 value: "TRUE"
+              - name: TYPE
+                value: "AUTO_CURSEFORGE"
+              - name: CF_PAGE_URL
+                value: "https://www.curseforge.com/minecraft/modpacks/ftb-evolution"
+              - name: CF_OVERRIDES_EXCLUSIONS
+                value: "mods/rgp_client*.jar"
+              - name: CF_API_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: cf-api-key
+                    key: CF_API_KEY
               - name: INIT_MEMORY
-                value: "1G"
-              - name: MAX_MEMORY
                 value: "4G"
+              - name: MAX_MEMORY
+                value: "12G"
             volumeMounts:
               - mountPath: /data
                 name: data
             resources:
               requests:
                 memory: "4Gi"
-                cpu: "1000m"
+                cpu: "3000m"
               limits:
-                memory: "4Gi"
-                cpu: "2000m"
+                memory: "12Gi"
+                cpu: "6000m"
             readinessProbe:
               exec:
                 command:
