@@ -19,7 +19,7 @@
     - name: Render the CF API key secret template
       ansible.builtin.template:
         src: k3s-manifests/secret-cf-api-key.yaml.j2
-        dest: "{{ temp_dir.path }}/secret-cf-api-key.yml"
+        dest: "{{ temp_dir.path }}/secret-cf-api-key.yaml"
         owner: root
         group: root
         mode: "0644"
