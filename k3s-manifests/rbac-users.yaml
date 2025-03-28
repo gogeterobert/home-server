@@ -3,6 +3,7 @@ kind: ServiceAccount
 metadata:
   name: miki
   namespace: satisfactory
+automountServiceAccountToken: true
 
 ---
 
