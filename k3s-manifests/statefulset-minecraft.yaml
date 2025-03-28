@@ -35,19 +35,19 @@
                     name: cf-api-key
                     key: CF_API_KEY
               - name: INIT_MEMORY
-                value: "4G"
+                value: "2G"
               - name: MAX_MEMORY
-                value: "12G"
+                value: "4G"
             volumeMounts:
               - mountPath: /data
                 name: data
             resources:
               requests:
+                memory: "2Gi"
+                cpu: "1000m"
+              limits:
                 memory: "4Gi"
                 cpu: "3000m"
-              limits:
-                memory: "12Gi"
-                cpu: "6000m"
             readinessProbe:
               exec:
                 command:
