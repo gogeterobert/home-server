@@ -15,7 +15,7 @@
         owner: root
         group: root
         mode: "0644"
-
+        
     # temporarily disabled due to not functioning right
     # - name: Render the CF API key secret template
     #   ansible.builtin.template:
@@ -26,7 +26,7 @@
     #     mode: "0644"
 
     - name: Apply K3s Manifests
-      command: kubectl apply -f "{{ temp_dir.path }}/"
+      command: kubectl apply -f "{{ temp_dir.path }}/" --prune --all
 
     - name: Remove temporary directory
       ansible.builtin.file:
