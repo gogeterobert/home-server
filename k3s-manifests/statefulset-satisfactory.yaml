@@ -77,6 +77,13 @@ spec:
               mountPath: /config
             - name: satisfactory-data
               mountPath: /config/gamefiles
+            - name: satisfactory-blueprints
+              mountPath: /config/saved/blueprints
+      volumes:
+        - name: satisfactory-blueprints
+          hostPath:
+            path: /home/miki/blueprints
+            type: DirectoryOrCreate
   volumeClaimTemplates:
     - metadata:
         name: satisfactory-config
