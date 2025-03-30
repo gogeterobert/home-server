@@ -70,7 +70,7 @@ spec:
               memory: "4Gi"
               cpu: "3000m"
             limits:
-              memory: "8Gi"
+              memory: "16Gi"
               cpu: "8000m"
           volumeMounts:
             - name: satisfactory-config
