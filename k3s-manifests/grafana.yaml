@@ -13,6 +13,7 @@ spec:
   hostPath:
     path: /mnt/data/grafana  # Ensure this path exists or adjust accordingly
 
+---
 # Persistent Volume for dashboards
 apiVersion: v1
 kind: PersistentVolume
