@@ -35,7 +35,7 @@
                     name: cf-api-key
                     key: CF_API_KEY
               - name: INIT_MEMORY
-                value: "4G"
+                value: "2G"
               - name: MAX_MEMORY
                 value: "8G"
             volumeMounts:
@@ -43,7 +43,7 @@
                 name: data
             resources:
               requests:
-                memory: "4Gi"
+                memory: "2Gi"
                 cpu: "1000m"
               limits:
                 memory: "8Gi"

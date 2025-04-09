@@ -1,3 +1,34 @@
+
+# Persistent Volume for Prometheus Data
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prometheus-pv
+  namespace: monitoring
+spec:
+  capacity:
+    storage: 1Gi  # Adjust the size based on your needs
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data/prometheus  # Adjust the path as needed
+
+---
+
+# Persistent Volume Claim for Prometheus Data
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-pvc
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi  # Match with the PV capacity
+---
+
 # Prometheus Deployment
 apiVersion: apps/v1
 kind: Deployment
@@ -79,34 +110,3 @@ data:
           insecure_skip_verify: true
         static_configs:
           - targets: ['nostalgiagame.go.ro:10250']
-
----
-
-# Persistent Volume for Prometheus Data
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: prometheus-pv
-  namespace: monitoring
-spec:
-  capacity:
-    storage: 1Gi  # Adjust the size based on your needs
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: /mnt/data/prometheus  # Adjust the path as needed
-
----
-
-# Persistent Volume Claim for Prometheus Data
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: prometheus-pvc
-  namespace: monitoring
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi  # Match with the PV capacity

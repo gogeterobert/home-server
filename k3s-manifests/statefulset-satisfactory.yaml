@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: satisfactory
+  namespace: satisfactory
+  labels:
+    app: satisfactory
+spec:
+  type: NodePort
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ports:
+    - name: "game"
+      port: 7777
+      protocol: UDP
+      targetPort: 7777
+      nodePort: 30000
+    - name: "api"
+      port: 7777
+      protocol: TCP
+      targetPort: 7777
+      nodePort: 30000
+  selector:
+    app: satisfactory
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: satisfactory
+  namespace: satisfactory
+spec:
+  selector:
+    matchLabels:
+      app: satisfactory
+  serviceName: "satisfactory"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: satisfactory
+    spec:
+      containers:
+        - name: satisfactory
+          image: wolveix/satisfactory-server:latest
+          env:
+            - name: DEBUG
+              value: "false"
+            - name: MAXPLAYERS
+              value: "5"
+            - name: PGID
+              value: "1000"
+            - name: PUID
+              value: "1000"
+            - name: SKIPUPDATE
+              value: "false"
+            - name: STEAMBETA
+              value: "false"
+            - name: AUTOPAUSE
+              value: "true"
+          ports:
+            - name: "api"
+              containerPort: 7777
+              protocol: TCP
+            - name: "game"
+              containerPort: 7777
+              protocol: UDP
+          resources:
+            requests:
+              memory: "4Gi"
+              cpu: "3000m"
+            limits:
+              memory: "16Gi"
+              cpu: "8000m"
+          volumeMounts:
+            - name: satisfactory-config
+              mountPath: /config
+            - name: satisfactory-data
+              mountPath: /config/gamefiles
+            - name: satisfactory-blueprints
+              mountPath: /config/saved/blueprints
+      volumes:
+        - name: satisfactory-blueprints
+          hostPath:
+            path: /home/miki/blueprints
+            type: DirectoryOrCreate
+  volumeClaimTemplates:
+    - metadata:
+        name: satisfactory-config
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+    - metadata:
+        name: satisfactory-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 20Gi
