@@ -37,7 +37,7 @@
               - name: INIT_MEMORY
                 value: "2G"
               - name: MAX_MEMORY
-                value: "8G"
+                value: "12G"
             volumeMounts:
               - mountPath: /data
                 name: data
@@ -46,7 +46,7 @@
                 memory: "2Gi"
                 cpu: "1000m"
               limits:
-                memory: "8Gi"
+                memory: "12Gi"
                 cpu: "3000m"
             readinessProbe:
               exec:
