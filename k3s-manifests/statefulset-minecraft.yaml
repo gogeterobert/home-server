@@ -23,6 +23,8 @@
             env:
               - name: EULA
                 value: "TRUE"
+              - name: ONLINE_MODE
+                value: "FALSE"
               - name: TYPE
                 value: "AUTO_CURSEFORGE"
               - name: CF_PAGE_URL
