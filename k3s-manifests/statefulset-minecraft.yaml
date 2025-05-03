@@ -24,7 +24,7 @@
               - name: EULA
                 value: "TRUE"
               - name: ONLINE_MODE
-                value: "FALSE"
+                value: "TRUE"
               - name: TYPE
                 value: "AUTO_CURSEFORGE"
               - name: CF_PAGE_URL
