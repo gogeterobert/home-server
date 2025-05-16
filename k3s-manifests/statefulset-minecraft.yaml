@@ -23,10 +23,12 @@
             env:
               - name: EULA
                 value: "TRUE"
+              - name: ONLINE_MODE
+                value: "TRUE"
               - name: TYPE
                 value: "AUTO_CURSEFORGE"
               - name: CF_PAGE_URL
-                value: "https://www.curseforge.com/minecraft/modpacks/ftb-evolution"
+                value: "https://www.curseforge.com/minecraft/modpacks/all-the-mods-9-to-the-sky"
               - name: CF_OVERRIDES_EXCLUSIONS
                 value: "mods/rgp_client*.jar"
               - name: CF_API_KEY
@@ -37,7 +39,7 @@
               - name: INIT_MEMORY
                 value: "2G"
               - name: MAX_MEMORY
-                value: "4G"
+                value: "12G"
             volumeMounts:
               - mountPath: /data
                 name: data
@@ -46,7 +48,7 @@
                 memory: "2Gi"
                 cpu: "1000m"
               limits:
-                memory: "4Gi"
+                memory: "12Gi"
                 cpu: "3000m"
             readinessProbe:
               exec:
