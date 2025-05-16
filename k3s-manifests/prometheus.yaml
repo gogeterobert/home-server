@@ -26,7 +26,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi  # Match with the PV capacity
+      storage: 5Gi  # Match with the PV capacity
 ---
 
 # Prometheus Deployment
@@ -48,6 +48,10 @@ spec:
       containers:
         - name: prometheus
           image: prom/prometheus:latest
+          args:
+            - "--storage.tsdb.retention.size=4GB"
+            - "--storage.tsdb.path=/prometheus"
+            - "--storage.tsdb.retention.time=90d"
           ports:
             - containerPort: 9090
           resources:
