@@ -15,15 +15,16 @@
         owner: root
         group: root
         mode: "0644"
-        
-    # temporarily disabled due to not functioning right
-    # - name: Render the CF API key secret template
-    #   ansible.builtin.template:
-    #     src: k3s-manifests/secret-cf-api-key.yaml.j2
-    #     dest: "{{ temp_dir.path }}/secret-cf-api-key.yaml"
-    #     owner: root
-    #     group: root
-    #     mode: "0644"
+
+    - name: Render the registry auth secret template
+      ansible.builtin.template:
+        src: k3s-manifests/registry-auth-secret.yaml.j2
+        dest: "{{ temp_dir.path }}/registry-auth-secret.yaml"
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        REGISTRY_HTPASSWD: "{{ lookup('env', 'REGISTRY_HTPASSWD') }}"
 
     - name: Apply K3s Manifests
       command: kubectl apply -f "{{ temp_dir.path }}/" --prune --all

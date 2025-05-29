@@ -17,10 +17,21 @@ jobs:
         run: test -n "${{ secrets.SERVER_IP }}" && test -n "${{ secrets.SERVER_USER }}" && test -n "${{ secrets.SERVER_PASSWORD }}"
 
 
-      - name: Install Ansible
-        run: sudo apt install -y ansible
+      - name: Install Ansible and apache2-utils
+        run: sudo apt update && sudo apt install -y ansible apache2-utils
+
+      - name: Generate htpasswd file
+        id: htpasswd
+        run: |
+          echo "${{ secrets.REGISTRY_PASSWORD }}" | htpasswd -Bi -c htpasswd "${{ secrets.REGISTRY_USER }}"
+          export REGISTRY_HTPASSWD=$(cat htpasswd)
+          echo "REGISTRY_HTPASSWD<<EOF" >> $GITHUB_ENV
+          echo "$REGISTRY_HTPASSWD" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Run Ansible Playbook
+        env:
+          REGISTRY_HTPASSWD: ${{ secrets.REGISTRY_HTPASSWD }}
         run: |
           echo "[servers]" > inventory.ini
           echo "k3s-master ansible_host=${{ secrets.SERVER_IP }} ansible_user=${{ secrets.SERVER_USER }} ansible_ssh_pass=${{ secrets.SERVER_PASSWORD }} ansible_become_pass=${{ secrets.SERVER_PASSWORD }}" >> inventory.ini
