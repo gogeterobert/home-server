@@ -176,6 +176,9 @@ spec:
     - port: 80
       targetPort: 3000
       nodePort: 30090
+    - port: 443
+      targetPort: 3000
+      nodePort: 30092
 
 ---
 # Ingress for Grafana
