@@ -132,6 +132,13 @@ spec:
       containers:
         - name: grafana
           image: grafana/grafana:latest
+          env:
+            - name: GF_SERVER_PROTOCOL
+              value: https
+            - name: GF_SERVER_CERT_FILE
+              value: /etc/grafana/certs/tls.crt
+            - name: GF_SERVER_CERT_KEY
+              value: /etc/grafana/certs/tls.key
           ports:
             - containerPort: 3000
           resources:
@@ -148,6 +155,9 @@ spec:
               mountPath: /etc/grafana/provisioning/dashboards
             - name: grafana-datasource-provisioning
               mountPath: /etc/grafana/provisioning/datasources
+            - name: grafana-tls
+              mountPath: /etc/grafana/certs
+              readOnly: true
       volumes:
         - name: grafana-storage
           persistentVolumeClaim:
@@ -160,6 +170,9 @@ spec:
         - name: grafana-datasource-provisioning
           configMap:
             name: grafana-datasource
+        - name: grafana-tls
+          secret:
+            secretName: grafana-tls
 
 ---
 # Grafana Service (Exposed on NodePort 30090)
@@ -181,29 +194,3 @@ spec:
       port: 443
       targetPort: 3000
       nodePort: 30092
-
----
-# Ingress for Grafana
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: grafana
-  namespace: monitoring
-  annotations:
-    kubernetes.io/ingress.class: traefik
-spec:
-  rules:
-    - host: nostalgiagame.go.ro
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: grafana
-                port:
-                  number: 80
-  tls:
-    - hosts:
-        - nostalgiagame.go.ro
-      secretName: grafana-tls
