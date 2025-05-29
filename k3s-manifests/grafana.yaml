@@ -131,7 +131,7 @@ spec:
               mountPath: /config
       containers:
         - name: grafana
-          image: grafana/grafana:latest
+          image: grafana/grafana:11.6.1
           env:
             - name: GF_SERVER_PROTOCOL
               value: https
