@@ -34,8 +34,9 @@ spec:
           image: prom/prometheus:latest
           args:
             - "--storage.tsdb.retention.size=4GB"
-            - "--storage.tsdb.path=/prometheus"
             - "--storage.tsdb.retention.time=90d"
+            - "--config.file=/etc/prometheus/prometheus.yml"
+            - "--storage.tsdb.path=/prometheus"
           ports:
             - containerPort: 9090
           resources:
