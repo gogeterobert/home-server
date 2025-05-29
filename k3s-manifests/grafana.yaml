@@ -153,8 +153,8 @@ spec:
               mountPath: /var/lib/grafana
             - name: grafana-dashboards
               mountPath: /etc/grafana/provisioning/dashboards
-            - name: grafana-datasource-provisioning
-              mountPath: /etc/grafana/provisioning/datasources
+            # - name: grafana-datasource-provisioning
+            #   mountPath: /etc/grafana/provisioning/datasources
             - name: grafana-tls
               mountPath: /etc/grafana/certs
               readOnly: true
@@ -167,9 +167,9 @@ spec:
         - name: grafana-dashboard-provisioning
           configMap:
             name: grafana-dashboard-provisioning
-        - name: grafana-datasource-provisioning
-          configMap:
-            name: grafana-datasource
+        # - name: grafana-datasource-provisioning
+        #   configMap:
+        #     name: grafana-datasource
         - name: grafana-tls
           secret:
             secretName: grafana-tls
