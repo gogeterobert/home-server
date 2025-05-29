@@ -122,7 +122,7 @@ spec:
             - "/bin/sh"
             - "-c"
             - >
-              curl -s https://grafana.com/api/dashboards/1860/revisions/latest/download -o /etc/grafana/provisioning/dashboards/node-exporter-full.json;
+              curl -s https://grafana.com/api/dashboards/1860/revisions/37/download -o /etc/grafana/provisioning/dashboards/node-exporter-full.json;
               cp /config/dashboards.yaml /etc/grafana/provisioning/dashboards/dashboards.yaml
           volumeMounts:
             - name: grafana-dashboards
