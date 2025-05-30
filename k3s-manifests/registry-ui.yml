@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry-ui
+  namespace: registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registry-ui
+  template:
+    metadata:
+      labels:
+        app: registry-ui
+    spec:
+      containers:
+        - name: registry-ui
+          image: joxit/docker-registry-ui:latest
+          env:
+            - name: REGISTRY_TITLE
+              value: "My Docker Registry"
+            - name: REGISTRY_URL
+              value: "https://registry:5000"
+            - name: DELETE_IMAGES
+              value: "true"
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: registry-ui
+  namespace: registry
+spec:
+  type: NodePort
+  selector:
+    app: registry-ui
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30501
