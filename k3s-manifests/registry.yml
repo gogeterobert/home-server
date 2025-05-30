@@ -37,6 +37,9 @@ spec:
             - name: auth
               mountPath: /auth
               readOnly: true
+            - name: registry-tls
+              mountPath: /certs
+              readOnly: true
           env:
             - name: REGISTRY_AUTH
               value: htpasswd
@@ -44,6 +47,10 @@ spec:
               value: Registry Realm
             - name: REGISTRY_AUTH_HTPASSWD_PATH
               value: /auth/htpasswd
+            - name: REGISTRY_HTTP_TLS_CERTIFICATE
+              value: /certs/tls.crt
+            - name: REGISTRY_HTTP_TLS_KEY
+              value: /certs/tls.key
           resources:
             requests:
               cpu: "100m"
@@ -58,6 +65,9 @@ spec:
         - name: auth
           secret:
             secretName: registry-auth
+        - name: registry-tls
+          secret:
+            secretName: registry-tls
 ---
 apiVersion: v1
 kind: Service
