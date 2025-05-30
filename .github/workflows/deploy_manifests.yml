@@ -25,6 +25,7 @@ jobs:
         run: |
           echo "${{ secrets.REGISTRY_PASSWORD }}" | htpasswd -Bi -c htpasswd "${{ vars.REGISTRY_USER }}"
           export REGISTRY_HTPASSWD=$(cat htpasswd)
+          echo "::add-mask::$REGISTRY_HTPASSWD"
           echo "REGISTRY_HTPASSWD<<EOF" >> $GITHUB_ENV
           echo "$REGISTRY_HTPASSWD" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
