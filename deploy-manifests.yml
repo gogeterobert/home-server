@@ -32,6 +32,14 @@
       vars:
         REGISTRY_HTPASSWD: "{{ lookup('env', 'REGISTRY_HTPASSWD') }}"
 
+    - name: Apply cert-manager manifest
+      command: kubectl apply -f "{{ temp_dir.path }}/cert-manager.yaml"
+
+    - name: Wait for cert-manager-webhook to be ready
+      command: >
+        kubectl rollout status deployment/cert-manager-webhook
+        -n cert-manager --timeout=120s
+
     - name: Apply K3s Manifests
       command: kubectl apply -f "{{ temp_dir.path }}/" --prune --all
 
