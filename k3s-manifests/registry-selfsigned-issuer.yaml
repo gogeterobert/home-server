@@ -1,10 +1,24 @@
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: Certificate
 metadata:
-  name: registry-selfsigned
+  name: registry-ca-cert
   namespace: registry
 spec:
-  selfSigned: {}
+  isCA: true
+  commonName: registry-ca
+  secretName: registry-ca-secret
+  issuerRef:
+    name: registry-ca
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: registry-cert-issuer
+  namespace: registry
+spec:
+  ca:
+    secretName: registry-ca-secret
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -14,12 +28,12 @@ metadata:
 spec:
   secretName: registry-tls
   duration: 8760h # 1 year
-  renewBefore: 360h # 15 days
+  renewBefore: 360h
   commonName: nostalgiagame.go.ro
   dnsNames:
     - nostalgiagame.go.ro
   ipAddresses:
     - 192.168.1.186
   issuerRef:
-    name: registry-selfsigned
+    name: registry-cert-issuer
     kind: Issuer
