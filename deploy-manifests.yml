@@ -11,7 +11,7 @@
     - name: Download latest cert-manager manifest
       ansible.builtin.get_url:
         url: https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
-        dest: k3s-manifests/cert-manager.yaml
+        dest: "{{ temp_dir.path }}/cert-manager.yaml"
         mode: "0644"
 
     - name: Copy K3s manifests to the temporary directory
