@@ -113,7 +113,7 @@ spec:
     spec:
       containers:
         - name: keycloak
-          image: nostalgiagame.go.ro:30500/keycloak:latest
+          image: localhost:30500/keycloak:latest
           args: ["start-dev"]
           env:
             - name: KEYCLOAK_ADMIN
