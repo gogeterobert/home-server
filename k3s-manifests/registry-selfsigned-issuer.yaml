@@ -18,6 +18,8 @@ spec:
   commonName: nostalgiagame.go.ro
   dnsNames:
     - nostalgiagame.go.ro
+  ipAddresses:
+    - 192.168.1.186
   issuerRef:
     name: registry-selfsigned
     kind: Issuer
