@@ -20,7 +20,7 @@ spec:
             - name: REGISTRY_TITLE
               value: "My Docker Registry"
             - name: REGISTRY_URL
-              value: "https://registry:5000"
+              value: "https://nostalgiagame.go.ro:30500"
             - name: DELETE_IMAGES
               value: "true"
           ports:
