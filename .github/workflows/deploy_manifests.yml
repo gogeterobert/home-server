@@ -31,7 +31,7 @@ jobs:
 
       - name: Run Ansible Playbook
         env:
-          REGISTRY_HTPASSWD: ${{ vars.REGISTRY_HTPASSWD }}
+          REGISTRY_HTPASSWD: ${{ env.REGISTRY_HTPASSWD }}
         run: |
           echo "[servers]" > inventory.ini
           echo "k3s-master ansible_host=${{ secrets.SERVER_IP }} ansible_user=${{ secrets.SERVER_USER }} ansible_ssh_pass=${{ secrets.SERVER_PASSWORD }} ansible_become_pass=${{ secrets.SERVER_PASSWORD }}" >> inventory.ini
