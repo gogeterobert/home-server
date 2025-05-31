@@ -111,6 +111,8 @@ spec:
       labels:
         app: keycloak
     spec:
+      imagePullSecrets:
+        - name: regcred
       containers:
         - name: keycloak
           image: localhost:30500/keycloak:latest

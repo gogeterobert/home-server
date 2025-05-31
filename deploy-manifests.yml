@@ -32,6 +32,17 @@
       vars:
         REGISTRY_HTPASSWD: "{{ lookup('env', 'REGISTRY_HTPASSWD') }}"
 
+    - name: Render the registry auth docker json
+      ansible.builtin.template:
+        src: k3s-manifests/registry-image-creds.yaml.j2
+        dest: "{{ temp_dir.path }}/registry-image-creds.yaml"
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        DOCKERCONFIGJSON_B64: "{{ lookup('env', 'DOCKERCONFIGJSON_B64') }}"
+
+
     - name: Apply cert-manager manifest
       command: kubectl apply -f "{{ temp_dir.path }}/cert-manager.yaml"
 
