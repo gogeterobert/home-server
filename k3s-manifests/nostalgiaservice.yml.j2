@@ -1,0 +1,126 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nostalgiaservice
+  namespace: nostalgiagame
+spec:
+  type: NodePort
+  ports:
+    - port: 5001
+      targetPort: 5001
+      protocol: TCP
+      name: http
+      nodePort: 30003
+  selector:
+    app: nostalgiaservice
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nostalgiaservice-postgres
+  namespace: nostalgiagame
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+      name: postgres
+  selector:
+    app: nostalgiaservice-postgres
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nostalgiaservice-postgres-pvc
+  namespace: nostalgiagame
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: local-path
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nostalgiaservice-postgres
+  namespace: nostalgiagame
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nostalgiaservice-postgres
+  template:
+    metadata:
+      labels:
+        app: nostalgiaservice-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16
+          env:
+            - name: POSTGRES_DB
+              value: nostalgiaservice
+            - name: POSTGRES_USER
+              value: {{ db_user }}
+            - name: POSTGRES_PASSWORD
+              value: {{ db_password }}
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: nostalgiaservice-postgres-storage
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+      volumes:
+        - name: nostalgiaservice-postgres-storage
+          persistentVolumeClaim:
+            claimName: nostalgiaservice-postgres-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nostalgiaservice
+  namespace: nostalgiagame
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nostalgiaservice
+  template:
+    metadata:
+      labels:
+        app: nostalgiaservice
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: nostalgiaservice
+          image: localhost:30500/nostalgiaservice:latest
+          imagePullPolicy: Always
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Production
+            - name: ConnectionStrings__DefaultConnection
+              value: "Host=nostalgiaservice-postgres;Port=5432;Database=nostalgiaservice;Username={{ db_user }};Password={{ db_password }}"
+            - name: Keycloak__Authority
+              value: "http://localhost:30002/realms/nostalgia"
+            - name: Keycloak__ClientId
+              value: "{{ keycloak_client_id }}"
+            - name: Keycloak__ClientSecret
+              value: "{{ keycloak_client_secret }}"
+          ports:
+            - containerPort: 5001
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi

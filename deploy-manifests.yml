@@ -42,6 +42,18 @@
       vars:
         DOCKERCONFIGJSON_B64: "{{ lookup('env', 'DOCKERCONFIGJSON_B64') }}"
 
+    - name: Render the nostalgiaservice manifest
+      ansible.builtin.template:
+        src: k3s-manifests/nostalgiaservice.yml.j2
+        dest: "{{ temp_dir.path }}/nostalgiaservice.yml"
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        db_user: nostalgiaservice
+        db_password: nostalgiaservicepass
+        keycloak_client_id: "{{ lookup('env', 'KEYCLOAK_CLIENT_ID') }}"
+        keycloak_client_secret: "{{ lookup('env', 'KEYCLOAK_CLIENT_SECRET') }}"
 
     - name: Apply cert-manager manifest
       command: kubectl apply -f "{{ temp_dir.path }}/cert-manager.yaml"
