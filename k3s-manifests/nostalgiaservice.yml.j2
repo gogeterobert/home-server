@@ -107,7 +107,7 @@ spec:
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: Production
-            - name: ConnectionStrings__DefaultConnection
+            - name: ConnectionStrings__nostalgiaserviceDb
               value: "Host=nostalgiaservice-postgres;Port=5432;Database=nostalgiaservice;Username={{ db_user }};Password={{ db_password }}"
             - name: Keycloak__Authority
               value: "http://localhost:30002/realms/nostalgia"
