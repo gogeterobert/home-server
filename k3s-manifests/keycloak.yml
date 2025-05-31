@@ -116,6 +116,7 @@ spec:
       containers:
         - name: keycloak
           image: localhost:30500/keycloak:latest
+          imagePullPolicy: Always
           args: ["start-dev"]
           env:
             - name: KEYCLOAK_ADMIN
