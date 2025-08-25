@@ -51,7 +51,7 @@ spec:
         - name: regcred
       containers:
         - name: gun-relay
-          image: 192.168.1.186:30500/gun-relay:latest
+          image: localhost:30500/gun-relay:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8765
