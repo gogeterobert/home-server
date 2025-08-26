@@ -60,11 +60,11 @@ spec:
               mountPath: /app/data
           resources:
             requests:
-              cpu: 50m
+              cpu: 250m
               memory: 256Mi
             limits:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 500m
+              memory: 512Mi
       volumes:
         - name: gun-relay-storage
           persistentVolumeClaim:
