@@ -1,71 +1,71 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: dig
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: gun-relay
-  namespace: dig
-spec:
-  type: NodePort
-  ports:
-    - port: 8765
-      targetPort: 8765
-      protocol: TCP
-      name: http
-      nodePort: 30876
-  selector:
-    app: gun-relay
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: gun-relay-pvc
-  namespace: dig
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: local-path
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: gun-relay
-  namespace: dig
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: gun-relay
-  template:
-    metadata:
-      labels:
-        app: gun-relay
-    spec:
-      imagePullSecrets:
-        - name: regcred
-      containers:
-        - name: gun-relay
-          image: localhost:30500/gun-relay:latest
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 8765
-          volumeMounts:
-            - name: gun-relay-storage
-              mountPath: /app/data
-          resources:
-            requests:
-              cpu: 250m
-              memory: 256Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
-      volumes:
-        - name: gun-relay-storage
-          persistentVolumeClaim:
-            claimName: gun-relay-pvc
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: dig
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: gun-relay
+#   namespace: dig
+# spec:
+#   type: NodePort
+#   ports:
+#     - port: 8765
+#       targetPort: 8765
+#       protocol: TCP
+#       name: http
+#       nodePort: 30876
+#   selector:
+#     app: gun-relay
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: gun-relay-pvc
+#   namespace: dig
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 1Gi
+#   storageClassName: local-path
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: gun-relay
+#   namespace: dig
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: gun-relay
+#   template:
+#     metadata:
+#       labels:
+#         app: gun-relay
+#     spec:
+#       imagePullSecrets:
+#         - name: regcred
+#       containers:
+#         - name: gun-relay
+#           image: localhost:30500/gun-relay:latest
+#           imagePullPolicy: Always
+#           ports:
+#             - containerPort: 8765
+#           volumeMounts:
+#             - name: gun-relay-storage
+#               mountPath: /app/data
+#           resources:
+#             requests:
+#               cpu: 250m
+#               memory: 256Mi
+#             limits:
+#               cpu: 500m
+#               memory: 512Mi
+#       volumes:
+#         - name: gun-relay-storage
+#           persistentVolumeClaim:
+#             claimName: gun-relay-pvc
