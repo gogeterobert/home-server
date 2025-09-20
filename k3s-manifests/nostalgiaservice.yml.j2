@@ -20,11 +20,13 @@ metadata:
   name: nostalgiaservice-postgres
   namespace: nostalgiagame
 spec:
+  type: NodePort
   ports:
     - port: 5432
       targetPort: 5432
       protocol: TCP
       name: postgres
+      nodePort: 30432
   selector:
     app: nostalgiaservice-postgres
 ---
