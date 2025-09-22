@@ -28,7 +28,7 @@
               - name: TYPE
                 value: "AUTO_CURSEFORGE"
               - name: CF_PAGE_URL
-                value: "https://www.curseforge.com/minecraft/modpacks/all-the-mods-9-to-the-sky"
+                value: "https://www.curseforge.com/minecraft/modpacks/all-the-mods-10-sky"
               - name: CF_OVERRIDES_EXCLUSIONS
                 value: "mods/rgp_client*.jar"
               - name: CF_API_KEY
