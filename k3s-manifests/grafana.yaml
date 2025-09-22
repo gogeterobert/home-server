@@ -132,13 +132,6 @@ spec:
       containers:
         - name: grafana
           image: grafana/grafana:11.6.1
-          env:
-            - name: GF_SERVER_PROTOCOL
-              value: https
-            - name: GF_SERVER_CERT_FILE
-              value: /etc/grafana/certs/tls.crt
-            - name: GF_SERVER_CERT_KEY
-              value: /etc/grafana/certs/tls.key
           ports:
             - containerPort: 3000
           resources:
@@ -155,9 +148,6 @@ spec:
               mountPath: /etc/grafana/provisioning/dashboards
             - name: grafana-datasource-provisioning
               mountPath: /etc/grafana/provisioning/datasources
-            - name: grafana-tls
-              mountPath: /etc/grafana/certs
-              readOnly: true
       volumes:
         - name: grafana-storage
           persistentVolumeClaim:
@@ -170,9 +160,6 @@ spec:
         - name: grafana-datasource-provisioning
           configMap:
             name: grafana-datasource
-        - name: grafana-tls
-          secret:
-            secretName: grafana-tls
 
 ---
 # Grafana Service (Exposed on NodePort 30090)
