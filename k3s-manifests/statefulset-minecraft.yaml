@@ -40,6 +40,8 @@
                 value: "2G"
               - name: MAX_MEMORY
                 value: "12G"
+              - name: DIFFICULTY
+                value: "hard"
             volumeMounts:
               - mountPath: /data
                 name: data
