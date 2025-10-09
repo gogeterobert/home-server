@@ -93,7 +93,7 @@ data:
       - name: prometheus
         type: prometheus
         access: proxy
-        url: http://nostalgiagame.go.ro:30091
+        url: http://prometheus.monitoring.svc.cluster.local
         isDefault: true
         editable: true
 
@@ -162,7 +162,7 @@ spec:
             name: grafana-datasource
 
 ---
-# Grafana Service (Exposed on NodePort 30090)
+# Grafana Service (ClusterIP for Ingress)
 apiVersion: v1
 kind: Service
 metadata:
@@ -171,9 +171,37 @@ metadata:
 spec:
   selector:
     app: grafana
-  type: NodePort
+  type: ClusterIP
   ports:
     - name: http
       port: 80
       targetPort: 3000
-      nodePort: 30090
+
+---
+# Grafana Ingress with Let's Encrypt
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana
+  namespace: monitoring
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - grafana.server.robertgogete.eu
+      secretName: grafana-tls
+  rules:
+    - host: grafana.server.robertgogete.eu
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 80
