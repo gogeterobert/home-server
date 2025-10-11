@@ -147,3 +147,29 @@ spec:
         - name: keycloak-storage
           persistentVolumeClaim:
             claimName: keycloak-pvc
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak
+  namespace: nostalgiagame
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - gameidp.server.robertgogete.eu
+      secretName: keycloak-tls
+  rules:
+    - host: gameidp.server.robertgogete.eu
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak
+                port:
+                  number: 8080

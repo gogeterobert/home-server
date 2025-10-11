@@ -112,7 +112,7 @@ spec:
             - name: ConnectionStrings__nostalgiaserviceDb
               value: "Host=nostalgiaservice-postgres;Port=5432;Database=nostalgiaservice;Username={{ db_user }};Password={{ db_password }}"
             - name: Keycloak__Authority
-              value: "http://localhost:30002/realms/nostalgia"
+              value: "https://keycloak.server.robertgogete.eu/realms/nostalgia"
             - name: Keycloak__ClientId
               value: "{{ keycloak_client_id }}"
             - name: Keycloak__ClientSecret
@@ -126,3 +126,29 @@ spec:
             limits:
               cpu: 500m
               memory: 1Gi
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nostalgiaservice
+  namespace: nostalgiagame
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - gameservice.server.robertgogete.eu
+      secretName: nostalgiaservice-tls
+  rules:
+    - host: gameservice.server.robertgogete.eu
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nostalgiaservice
+                port:
+                  number: 8080
