@@ -1,0 +1,16 @@
+# k3s-manifests/coredns-custom.yaml
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: coredns-custom
+      namespace: kube-system
+    data:
+      # This filename ends in .override to match the "import" directive
+      # in the main Corefile.
+      host-overrides.override: |
+        hosts {
+          192.168.1.186 nostalgiagame.go.ro grafana.server.robertgogete.eu prometheus.server.robertgogete.eu server.robertgogete.eu
+          2a02:2f00:409:fe00:c665:16ff:feb7:4000 nostalgiagame.go.ro grafana.server.robertgogete.eu prometheus.server.robertgogete.eu server.robertgogete.eu
+          fallthrough
+        }
+    
