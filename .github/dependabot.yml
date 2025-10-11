@@ -1,0 +1,26 @@
+# .github/dependabot.yml
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Maintain dependencies for Docker images in Kubernetes manifests
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    ignore:
+      # Ignoring locally built images as Dependabot cannot update them.
+      - dependency-name: "localhost:30500/keycloak"
+      - dependency-name: "localhost:30500/nostalgiaservice"
+      # Example of ignoring major version updates for postgres
+      - dependency-name: "postgres"
+        update-types: ["version-update:semver-major"]
