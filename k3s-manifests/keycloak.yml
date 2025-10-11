@@ -117,6 +117,7 @@ spec:
         - name: keycloak
           image: localhost:30500/keycloak:latest
           imagePullPolicy: Always
+          args: ["start"]
           env:
             - name: KEYCLOAK_ADMIN
               value: admin
