@@ -139,6 +139,8 @@ spec:
               value: "false"
             - name: KC_HTTP_ENABLED
               value: "true"
+            - name: KC_HTTPS_PORT
+              value: "443"
           ports:
             - containerPort: 8080
           resources:
