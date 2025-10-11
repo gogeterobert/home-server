@@ -117,7 +117,6 @@ spec:
         - name: keycloak
           image: localhost:30500/keycloak:latest
           imagePullPolicy: Always
-          args: ["start-dev"]
           env:
             - name: KEYCLOAK_ADMIN
               value: admin
@@ -135,6 +134,8 @@ spec:
               value: "edge"
             - name: KC_HOSTNAME_STRICT_HTTPS
               value: "true"
+            - name: KC_HOSTNAME_URL
+              value: "https://gameidp.server.robertgogete.eu"
           ports:
             - containerPort: 8080
           resources:
