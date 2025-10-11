@@ -133,10 +133,10 @@ spec:
               value: keycloakpass
             - name: KC_PROXY
               value: "edge"
-            - name: KC_HOSTNAME_STRICT_HTTPS
-              value: "true"
-            - name: KC_HOSTNAME_URL
-              value: "https://gameidp.server.robertgogete.eu"
+            - name: KC_HOSTNAME
+              value: "gameidp.server.robertgogete.eu"
+            - name: KC_HOSTNAME_STRICT
+              value: "false"
             - name: KC_HTTP_ENABLED
               value: "true"
           ports:
