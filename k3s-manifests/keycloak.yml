@@ -131,6 +131,10 @@ spec:
               value: keycloak
             - name: KC_DB_PASSWORD
               value: keycloakpass
+            - name: KC_PROXY
+              value: "edge"
+            - name: KC_HOSTNAME_STRICT_HTTPS
+              value: "true"
           ports:
             - containerPort: 8080
           resources:
@@ -155,6 +159,7 @@ metadata:
   namespace: nostalgiagame
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   ingressClassName: traefik
