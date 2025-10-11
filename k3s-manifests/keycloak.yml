@@ -131,16 +131,12 @@ spec:
               value: keycloak
             - name: KC_DB_PASSWORD
               value: keycloakpass
-            - name: KC_PROXY
-              value: "edge"
+            - name: KC_PROXY_HEADERS
+              value: "xforwarded"
             - name: KC_HOSTNAME
-              value: "gameidp.server.robertgogete.eu"
-            - name: KC_HOSTNAME_STRICT
-              value: "false"
+              value: "https://gameidp.server.robertgogete.eu"
             - name: KC_HTTP_ENABLED
               value: "true"
-            - name: KC_HTTPS_PORT
-              value: "443"
           ports:
             - containerPort: 8080
           resources:
