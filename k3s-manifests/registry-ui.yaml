@@ -22,7 +22,7 @@ spec:
         # This is the crucial part. We point the UI to the internal
         # Kubernetes service name of your registry.
         - name: REGISTRY_URL
-          value: https://registry.server.robertgogete.eu
+          value: http://registry.registry.svc.cluster.local:5000
         # Optional: Set a title for your UI
         - name: REGISTRY_TITLE
           value: Robert's Container Registry
