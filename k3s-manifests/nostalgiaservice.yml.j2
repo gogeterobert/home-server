@@ -107,15 +107,17 @@ spec:
           image: registry.server.robertgogete.eu/nostalgiaservice:latest
           imagePullPolicy: Always
           env:
-            - name: ASPNETCORE_ENVIRONMENT
-              value: Production
-            - name: ConnectionStrings__nostalgiaserviceDb
-              value: "Host=nostalgiaservice-postgres;Port=5432;Database=nostalgiaservice;Username={{ db_user }};Password={{ db_password }}"
-            - name: Keycloak__Authority
-              value: "https://gameidp.server.robertgogete.eu/realms/nostalgia"
-            - name: Keycloak__ClientId
+            - name: NODE_ENV
+              value: "production"
+            - name: DATABASE_URL
+              value: "postgres://{{ db_user }}:{{ db_password }}@nostalgiaservice-postgres:5432/nostalgiaservice"
+            - name: KEYCLOAK_URL
+              value: "https://gameidp.server.robertgogete.eu"
+            - name: KEYCLOAK_REALM
+              value: "master"
+            - name: KEYCLOAK_CLIENT_ID
               value: "{{ keycloak_client_id }}"
-            - name: Keycloak__ClientSecret
+            - name: KEYCLOAK_CLIENT_SECRET
               value: "{{ keycloak_client_secret }}"
           ports:
             - containerPort: 8080
