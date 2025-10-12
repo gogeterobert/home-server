@@ -115,7 +115,7 @@ spec:
         - name: regcred
       containers:
         - name: keycloak
-          image: localhost:30500/keycloak:latest
+          image: registry.server.robertgogete.eu/keycloak:latest
           imagePullPolicy: Always
           args: ["start"]
           env:

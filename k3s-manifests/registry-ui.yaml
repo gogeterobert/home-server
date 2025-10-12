@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry-ui
+  namespace: registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registry-ui
+  template:
+    metadata:
+      labels:
+        app: registry-ui
+    spec:
+      containers:
+      - name: registry-ui
+        image: joxit/docker-registry-ui:latest
+        ports:
+        - containerPort: 80
+        env:
+        # This is the crucial part. We point the UI to the internal
+        # Kubernetes service name of your registry.
+        - name: REGISTRY_URL
+          value: http://registry.registry.svc.cluster.local:5000
+        # Optional: Set a title for your UI
+        - name: REGISTRY_TITLE
+          value: Robert's Container Registry
+        # Optional: Enable delete functionality in the UI
+        - name: DELETE_IMAGES
+          value: "true"
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "250m"
+            memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: registry-ui
+  namespace: registry
+spec:
+  selector:
+    app: registry-ui
+  ports:
+  - port: 80
+    targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: registry-ui
+  namespace: registry
+  annotations:
+    # Use the same annotations as your other ingress for consistency
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+      # The new hostname for your UI
+      - registry-ui.server.robertgogete.eu
+      # cert-manager will create this secret for the new certificate
+      secretName: registry-ui-tls
+  rules:
+    - host: registry-ui.server.robertgogete.eu
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: registry-ui # <-- Point to the new UI service
+                port:
+                  number: 80

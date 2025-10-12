@@ -19,8 +19,8 @@ updates:
       interval: "weekly"
     ignore:
       # Ignoring locally built images as Dependabot cannot update them.
-      - dependency-name: "localhost:30500/keycloak"
-      - dependency-name: "localhost:30500/nostalgiaservice"
+      - dependency-name: "registry.server.robertgogete.eu/keycloak"
+      - dependency-name: "registry.server.robertgogete.eu/nostalgiaservice"
       # Example of ignoring major version updates for postgres
       - dependency-name: "postgres"
         update-types: ["version-update:semver-major"]
