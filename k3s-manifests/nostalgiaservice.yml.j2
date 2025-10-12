@@ -4,13 +4,12 @@ metadata:
   name: nostalgiaservice
   namespace: nostalgiagame
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
-    - port: 8080
-      targetPort: 8080
+    - port: 3000
+      targetPort: 3000
       protocol: TCP
       name: http
-      nodePort: 30003
   selector:
     app: nostalgiaservice
 ---
@@ -20,13 +19,12 @@ metadata:
   name: nostalgiaservice-postgres
   namespace: nostalgiagame
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 5432
       targetPort: 5432
       protocol: TCP
       name: postgres
-      nodePort: 30432
   selector:
     app: nostalgiaservice-postgres
 ---
@@ -120,7 +118,7 @@ spec:
             - name: KEYCLOAK_CLIENT_SECRET
               value: "{{ keycloak_client_secret }}"
           ports:
-            - containerPort: 8080
+            - containerPort: 3000
           resources:
             requests:
               cpu: 100m
@@ -154,4 +152,4 @@ spec:
               service:
                 name: nostalgiaservice
                 port:
-                  number: 8080
+                  number: 3000
