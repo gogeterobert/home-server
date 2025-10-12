@@ -6,5 +6,5 @@ metadata:
   namespace: kube-system
 data:
   NodeHosts: |
-    192.168.1.186 nostalgiagame.go.ro grafana.server.robertgogete.eu prometheus.server.robertgogete.eu server.robertgogete.eu gameidp.server.robertgogete.eu gameservice.server.robertgogete.eu
-    2a02:2f00:409:fe00:c665:16ff:feb7:4000 nostalgiagame.go.ro grafana.server.robertgogete.eu prometheus.server.robertgogete.eu server.robertgogete.eu gameidp.server.robertgogete.eu gameservice.server.robertgogete.eu
+    192.168.1.186 nostalgiagame.go.ro grafana.server.robertgogete.eu prometheus.server.robertgogete.eu server.robertgogete.eu gameidp.server.robertgogete.eu gameservice.server.robertgogete.eu immich.server.robertgogete.eu
+    2a02:2f00:409:fe00:c665:16ff:feb7:4000 nostalgiagame.go.ro grafana.server.robertgogete.eu prometheus.server.robertgogete.eu server.robertgogete.eu gameidp.server.robertgogete.eu gameservice.server.robertgogete.eu immich.server.robertgogete.eu

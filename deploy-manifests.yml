@@ -65,6 +65,16 @@
         keycloak_client_id: "{{ lookup('env', 'KEYCLOAK_CLIENT_ID') }}"
         keycloak_client_secret: "{{ lookup('env', 'KEYCLOAK_CLIENT_SECRET') }}"
 
+    - name: Render the immich manifest
+      ansible.builtin.template:
+        src: k3s-manifests/immich.yaml.j2
+        dest: "{{ temp_dir.path }}/immich.yaml"
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        immich_db_password: "{{ lookup('env', 'IMMICH_DB_PASSWORD') }}"
+
     - name: Apply cert-manager manifest
       command: kubectl apply -f "{{ temp_dir.path }}/cert-manager.yaml"
 
