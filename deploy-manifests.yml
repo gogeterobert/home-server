@@ -94,7 +94,7 @@
 
     - name: Wait for Longhorn manager to be ready
       command: >
-        kubectl rollout status deployment/longhorn-manager
+        kubectl rollout status daemonset/longhorn-manager
         -n longhorn-system --timeout=300s
 
     - name: Apply K3s Manifests
