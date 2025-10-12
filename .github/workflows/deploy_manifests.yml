@@ -26,7 +26,6 @@ jobs:
           DOCKERCONFIGJSON_B64: ${{ secrets.DOCKERCONFIGJSON_B64 }}
           KEYCLOAK_CLIENT_ID: ${{ secrets.KEYCLOAK_CLIENT_ID }}
           KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
-          IMMICH_DB_PASSWORD: ${{ secrets.IMMICH_DB_PASSWORD }}
         run: |
           echo "[servers]" > inventory.ini
           echo "k3s-master ansible_host=${{ secrets.SERVER_IP }} ansible_user=${{ secrets.SERVER_USER }} ansible_ssh_pass=${{ secrets.SERVER_PASSWORD }} ansible_become_pass=${{ secrets.SERVER_PASSWORD }}" >> inventory.ini
