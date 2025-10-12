@@ -14,6 +14,12 @@
         dest: "{{ temp_dir.path }}/cert-manager.yaml"
         mode: "0644"
 
+    - name: Download Longhorn v1.6.2 manifest
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/longhorn/longhorn/v1.6.2/deploy/longhorn.yaml
+        dest: "{{ temp_dir.path }}/longhorn.yaml"
+        mode: "0644"
+
     - name: Copy K3s manifests to the temporary directory
       ansible.builtin.copy:
         src: k3s-manifests/
@@ -82,6 +88,14 @@
       command: >
         kubectl rollout status deployment/cert-manager-webhook
         -n cert-manager --timeout=120s
+
+    - name: Apply Longhorn manifest
+      command: kubectl apply -f "{{ temp_dir.path }}/longhorn.yaml"
+
+    - name: Wait for Longhorn manager to be ready
+      command: >
+        kubectl rollout status deployment/longhorn-manager
+        -n longhorn-system --timeout=300s
 
     - name: Apply K3s Manifests
       command: kubectl apply -f "{{ temp_dir.path }}/" --prune --all

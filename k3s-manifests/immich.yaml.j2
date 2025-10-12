@@ -1,9 +1,3 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: immich
-
----
 # ConfigMap for Immich environment variables
 apiVersion: v1
 kind: ConfigMap
@@ -40,38 +34,12 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: local-path
+  # Use Longhorn to enable volume expansion in the future
+  storageClassName: longhorn
 
 ---
-# PersistentVolume for the external Immich library storage
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: immich-external-pv
-spec:
-  # Set this to the size of your external drive
-  capacity:
-    storage: 1Ti # Example: 1 Terabyte
-  accessModes:
-    - ReadWriteOnce
-  # Keep the data even if the PV is deleted
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: local-path
-  local:
-    # IMPORTANT: Change this to the actual path where your external disk is mounted on the server
-    path: /mnt/external-storage
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          # IMPORTANT: Replace with the hostname of the server where the disk is attached
-          - your-server-hostname
-
----
-# Persistent Volume Claim for Immich library (MODIFIED to bind to the PV above)
+# Persistent Volume Claim for Immich library
+# This will use the 'longhorn' storage class to allow for future expansion.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -82,10 +50,9 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      # This request should be less than or equal to the PV's capacity
       storage: 50Gi
-  # This explicitly tells the PVC to bind to the specific PV we created.
-  volumeName: immich-external-pv
+  # Use Longhorn to enable volume expansion in the future
+  storageClassName: longhorn
 
 ---
 # PostgreSQL Deployment
