@@ -26,8 +26,7 @@ spec:
         # Optional: Set a title for your UI
         - name: REGISTRY_TITLE
           value: Robert's Container Registry
-        # Optional: Enable delete functionality in the UI
-        - name: DELETE_IMAGES
+        - name: REGISTRY_SECURED # <-- AND THIS to require login for viewing
           value: "true"
         resources:
           requests:
