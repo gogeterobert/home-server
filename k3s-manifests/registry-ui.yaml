@@ -19,15 +19,19 @@ spec:
         ports:
         - containerPort: 80
         env:
-        # This is the crucial part. We point the UI to the internal
-        # Kubernetes service name of your registry.
+        - name: URL
+          value: https://registry-ui.server.robertgogete.eu
         - name: REGISTRY_URL
+          value: https://registry-ui.server.robertgogete.eu
+        - name: NGINX_PROXY_PASS_URL
           value: http://registry.registry.svc.cluster.local:5000
         # Optional: Set a title for your UI
         - name: REGISTRY_TITLE
           value: Robert's Container Registry
         - name: REGISTRY_SECURED # <-- AND THIS to require login for viewing
           value: "true"
+        - name: DELETE_IMAGES
+          value: "true" 
         resources:
           requests:
             cpu: "100m"
