@@ -121,3 +121,15 @@ data:
       - job_name: 'node'
         static_configs:
           - targets: ['nostalgiagame.go.ro:9100']
+
+      # --- ADD THIS NEW JOB FOR KUBE-STATE-METRICS ---
+      - job_name: 'kube-state-metrics'
+        # Use Kubernetes Service Discovery to find the target
+        kubernetes_sd_configs:
+          - role: service
+        # Relabeling rules to select ONLY the kube-state-metrics service
+        relabel_configs:
+          # Keep only services with the name 'kube-state-metrics' in the 'kube-system' namespace
+          - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_namespace]
+            action: keep
+            regex: kube-state-metrics;kube-system
