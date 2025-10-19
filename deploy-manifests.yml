@@ -71,6 +71,17 @@
         keycloak_client_id: "{{ lookup('env', 'KEYCLOAK_CLIENT_ID') }}"
         keycloak_client_secret: "{{ lookup('env', 'KEYCLOAK_CLIENT_SECRET') }}"
 
+    - name: Render the Nextcloud manifest
+      ansible.builtin.template:
+        src: k3s-manifests/nextcloud.yml.j2
+        dest: "{{ temp_dir.path }}/nextcloud.yml"
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        nextcloud_postgres_password: "{{ lookup('env', 'NEXTCLOUD_POSTGRES_PASSWORD') }}"
+        nextcloud_admin_password: "{{ lookup('env', 'NEXTCLOUD_ADMIN_PASSWORD') }}"
+
     - name: Apply cert-manager manifest
       command: kubectl apply -f "{{ temp_dir.path }}/cert-manager.yaml"
 
