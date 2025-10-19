@@ -210,7 +210,6 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
-    traefik.ingress.kubernetes.io/router.middlewares: nextcloud-nextcloud-redirect@kubernetescrd
 spec:
   ingressClassName: traefik
   tls:
@@ -228,14 +227,3 @@ spec:
                 name: nextcloud
                 port:
                   number: 80
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: nextcloud-redirect
-  namespace: nextcloud
-spec:
-  redirectRegex:
-    regex: https://(.*)/.well-known/(card|cal)dav
-    replacement: https://$1/remote.php/dav/
-    permanent: true
