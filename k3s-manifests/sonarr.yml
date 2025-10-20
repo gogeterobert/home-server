@@ -159,7 +159,7 @@ spec:
             - name: WEBUI_PORT
               value: "8080"
           ports:
-            - name: http-qbittorrent
+            - name: qbit-http
               containerPort: 8080
             - name: torrent-tcp
               containerPort: 6881
@@ -196,7 +196,7 @@ spec:
     - name: http-sonarr
       port: 8989
       targetPort: 8989
-      nodePort: 30989
+      nodePort: 30990
 ---
 apiVersion: v1
 kind: Service
@@ -208,17 +208,17 @@ spec:
   selector:
     app: media-stack
   ports:
-    - name: http-qbittorrent
+    - name: qbit-http
       port: 8080
       targetPort: 8080
-      nodePort: 30808
+      nodePort: 30809
     - name: torrent-tcp
       port: 6881
       targetPort: 6881
       protocol: TCP
-      nodePort: 30881
+      nodePort: 30882
     - name: torrent-udp
       port: 6881
       targetPort: 6881
       protocol: UDP
-      nodePort: 30881
+      nodePort: 30882
