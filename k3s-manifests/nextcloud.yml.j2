@@ -91,13 +91,14 @@ spec:
             - name: POSTGRES_USER
               value: nextcloud
             - name: POSTGRES_PASSWORD
-              value: "{{ nextcloud_postgres_password }}"
+              value: {{ nextcloud_postgres_password | quote }}
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
           ports:
             - containerPort: 5432
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
-              subPath: postgres
           resources:
             requests:
               cpu: 100m
@@ -105,6 +106,14 @@ spec:
             limits:
               cpu: 500m
               memory: 1Gi
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pg_isready -U nextcloud -d nextcloud
+            initialDelaySeconds: 5
+            periodSeconds: 5
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:
@@ -153,11 +162,11 @@ spec:
             - name: POSTGRES_USER
               value: "nextcloud"
             - name: POSTGRES_PASSWORD
-              value: "{{ nextcloud_postgres_password }}"
+              value: {{ nextcloud_postgres_password | quote }}
             - name: NEXTCLOUD_ADMIN_USER
               value: "admin"
             - name: NEXTCLOUD_ADMIN_PASSWORD
-              value: "{{ nextcloud_admin_password }}"
+              value: {{ nextcloud_admin_password | quote }}
             - name: NEXTCLOUD_TRUSTED_DOMAINS
               value: "drive.server.robertgogete.eu"
             - name: TRUSTED_PROXIES
@@ -208,7 +217,7 @@ metadata:
   namespace: nextcloud
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   ingressClassName: traefik
