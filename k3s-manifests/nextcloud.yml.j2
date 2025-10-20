@@ -14,9 +14,9 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: local-path
+  storageClassName: manual
   local:
-    path: /storage/seagate-1tb
+    path: /storage/seagate-1tb/nextcloud-data
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -37,7 +37,30 @@ spec:
   resources:
     requests:
       storage: 600Gi
-  storageClassName: local-path
+  storageClassName: manual
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-nextcloud-pv
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  local:
+    path: /storage/seagate-1tb/postgres-nextcloud
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - k8s-master
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -50,7 +73,7 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: local-path
+  storageClassName: manual
 ---
 apiVersion: v1
 kind: Service
