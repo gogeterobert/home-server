@@ -1,22 +1,23 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: sonarr
+  name: media-stack
 ---
+# Config volume for Sonarr
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: sonarr-pv
+  name: sonarr-config-pv
 spec:
   capacity:
-    storage: 5Gi
+    storage: 1Gi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: manual
   local:
-    path: /storage/seagate-1tb/sonarr-data
+    path: /storage/seagate-1tb/media-stack/sonarr-config
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -29,30 +30,104 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: sonarr-pvc
-  namespace: sonarr
+  name: sonarr-config-pvc
+  namespace: media-stack
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 1Gi
+  storageClassName: manual
+---
+# Config volume for qBittorrent
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: qbittorrent-config-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  local:
+    path: /storage/seagate-1tb/media-stack/qbittorrent-config
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - nostalgiagame.go.ro
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qbittorrent-config-pvc
+  namespace: media-stack
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: manual
+---
+# Shared volume for downloads
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: downloads-pv
+spec:
+  capacity:
+    storage: 300Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  local:
+    path: /storage/seagate-1tb/media-stack/downloads
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - nostalgiagame.go.ro
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: downloads-pvc
+  namespace: media-stack
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 300Gi
   storageClassName: manual
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sonarr
-  namespace: sonarr
+  name: media-stack
+  namespace: media-stack
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sonarr
+      app: media-stack
   template:
     metadata:
       labels:
-        app: sonarr
+        app: media-stack
     spec:
       containers:
         - name: sonarr
@@ -65,34 +140,85 @@ spec:
             - name: TZ
               value: "Europe/Bucharest"
           ports:
-            - name: http
+            - name: http-sonarr
               containerPort: 8989
-          resources:
-            requests:
-              cpu: 250m
-              memory: 512Mi
-            limits:
-              cpu: 2000m
-              memory: 2Gi
           volumeMounts:
-            - name: config
+            - name: sonarr-config
               mountPath: /config
+            - name: downloads
+              mountPath: /downloads
+        - name: qbittorrent
+          image: lscr.io/linuxserver/qbittorrent:latest
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Europe/Bucharest"
+            - name: WEBUI_PORT
+              value: "8080"
+          ports:
+            - name: http-qbittorrent
+              containerPort: 8080
+            - name: torrent-tcp
+              containerPort: 6881
+              protocol: TCP
+            - name: torrent-udp
+              containerPort: 6881
+              protocol: UDP
+          volumeMounts:
+            - name: qbittorrent-config
+              mountPath: /config
+            - name: downloads
+              mountPath: /downloads
       volumes:
-        - name: config
+        - name: sonarr-config
           persistentVolumeClaim:
-            claimName: sonarr-pvc
+            claimName: sonarr-config-pvc
+        - name: qbittorrent-config
+          persistentVolumeClaim:
+            claimName: qbittorrent-config-pvc
+        - name: downloads
+          persistentVolumeClaim:
+            claimName: downloads-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: sonarr
-  namespace: sonarr
+  name: sonarr-nodeport
+  namespace: media-stack
 spec:
   type: NodePort
   selector:
-    app: sonarr
+    app: media-stack
   ports:
-    - name: http
+    - name: http-sonarr
       port: 8989
       targetPort: 8989
       nodePort: 30989
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbittorrent-nodeport
+  namespace: media-stack
+spec:
+  type: NodePort
+  selector:
+    app: media-stack
+  ports:
+    - name: http-qbittorrent
+      port: 8080
+      targetPort: 8080
+      nodePort: 30808
+    - name: torrent-tcp
+      port: 6881
+      targetPort: 6881
+      protocol: TCP
+      nodePort: 30881
+    - name: torrent-udp
+      port: 6881
+      targetPort: 6881
+      protocol: UDP
+      nodePort: 30881
