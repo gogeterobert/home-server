@@ -144,8 +144,8 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: 500m
-              memory: 1Gi
+              cpu: 750m
+              memory: 4Gi
           readinessProbe:
             exec:
               command:
@@ -226,8 +226,8 @@ spec:
               cpu: 200m
               memory: 512Mi
             limits:
-              cpu: 1000m
-              memory: 4Gi
+              cpu: 4000m
+              memory: 8Gi
           livenessProbe:
             httpGet:
               path: /status.php
