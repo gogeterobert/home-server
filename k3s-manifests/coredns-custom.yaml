@@ -2,9 +2,33 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: coredns
+  name: coredns-custom
   namespace: kube-system
 data:
-  NodeHosts: |
-    192.168.1.186 nostalgiagame.go.ro grafana.server.robertgogete.eu prometheus.server.robertgogete.eu server.robertgogete.eu gameidp.server.robertgogete.eu gameservice.server.robertgogete.eu registry.server.robertgogete.eu registry-ui.server.robertgogete.eu drive.server.robertgogete.eu
-    2a02:2f00:409:fe00:c665:16ff:feb7:4000 nostalgiagame.go.ro grafana.server.robertgogete.eu prometheus.server.robertgogete.eu server.robertgogete.eu gameidp.server.robertgogete.eu gameservice.server.robertgogete.eu registry.server.robertgogete.eu registry-ui.server.robertgogete.eu drive.server.robertgogete.eu
+  custom.server: |
+    robertgogete.eu:53 {
+        errors
+        log
+        hosts {
+            192.168.1.186 nostalgiagame.go.ro
+            192.168.1.186 grafana.server.robertgogete.eu
+            192.168.1.186 prometheus.server.robertgogete.eu
+            192.168.1.186 server.robertgogete.eu
+            192.168.1.186 gameidp.server.robertgogete.eu
+            192.168.1.186 gameservice.server.robertgogete.eu
+            192.168.1.186 registry.server.robertgogete.eu
+            192.168.1.186 registry-ui.server.robertgogete.eu
+            192.168.1.186 drive.server.robertgogete.eu
+            2a02:2f00:409:fe00:c665:16ff:feb7:4000 nostalgiagame.go.ro
+            2a02:2f00:409:fe00:c665:16ff:feb7:4000 grafana.server.robertgogete.eu
+            2a02:2f00:409:fe00:c665:16ff:feb7:4000 prometheus.server.robertgogete.eu
+            2a02:2f00:409:fe00:c665:16ff:feb7:4000 server.robertgogete.eu
+            2a02:2f00:409:fe00:c665:16ff:feb7:4000 gameidp.server.robertgogete.eu
+            2a02:2f00:409:fe00:c665:16ff:feb7:4000 gameservice.server.robertgogete.eu
+            2a02:2f00:409:fe00:c665:16ff:feb7:4000 registry.server.robertgogete.eu
+            2a02:2f00:409:fe00:c665:16ff:feb7:4000 registry-ui.server.robertgogete.eu
+            2a02:2f00:409:fe00:c665:16ff:feb7:4000 drive.server.robertgogete.eu
+            fallthrough
+        }
+        forward . /etc/resolv.conf
+    }
