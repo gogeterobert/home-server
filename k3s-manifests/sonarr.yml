@@ -167,6 +167,13 @@ spec:
             - name: torrent-udp
               containerPort: 6881
               protocol: UDP
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - echo 'WebUI\Auth\BypassAuthSubnet=192.168.1.0/24' >> /config/qBittorrent/qBittorrent.conf
           volumeMounts:
             - name: qbittorrent-config
               mountPath: /config
