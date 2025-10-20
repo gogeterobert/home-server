@@ -76,6 +76,21 @@ spec:
   storageClassName: manual
 ---
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init
+  namespace: nextcloud
+data:
+  init.sql: |
+    -- Grant all privileges to nextcloud user
+    ALTER DATABASE nextcloud OWNER TO nextcloud;
+    GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;
+    GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nextcloud;
+    GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO nextcloud;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO nextcloud;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO nextcloud;
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: postgres-nextcloud
@@ -139,6 +154,8 @@ spec:
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
+            - name: init-script
+              mountPath: /docker-entrypoint-initdb.d
           resources:
             requests:
               cpu: 100m
@@ -158,6 +175,9 @@ spec:
         - name: postgres-storage
           persistentVolumeClaim:
             claimName: postgres-nextcloud-pvc
+        - name: init-script
+          configMap:
+            name: postgres-init
 ---
 apiVersion: v1
 kind: Service
