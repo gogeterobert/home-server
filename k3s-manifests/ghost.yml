@@ -1,0 +1,125 @@
+---
+# Namespace for Ghost
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ghost
+---
+# Persistent Volume for Ghost Content
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ghost-content-pv
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  local:
+    path: /storage/seagate-1tb/ghost/content
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - nostalgiagame.go.ro
+---
+# Persistent Volume Claim for Ghost Content
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ghost-content-pvc
+  namespace: ghost
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: manual
+---
+# Ghost Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ghost
+  namespace: ghost
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ghost
+  template:
+    metadata:
+      labels:
+        app: ghost
+    spec:
+      containers:
+        - name: ghost
+          image: ghost:latest
+          env:
+            - name: url
+              value: "https://news.server.robertgogete.eu"
+            - name: database__client
+              value: "sqlite3"
+            - name: database__connection__filename
+              value: "/var/lib/ghost/content/data/ghost.db"
+            - name: database__useNullAsDefault
+              value: "true"
+          ports:
+            - containerPort: 2368
+          volumeMounts:
+            - name: ghost-content
+              mountPath: /var/lib/ghost/content
+      volumes:
+        - name: ghost-content
+          persistentVolumeClaim:
+            claimName: ghost-content-pvc
+---
+# Ghost Service (ClusterIP for Ingress)
+apiVersion: v1
+kind: Service
+metadata:
+  name: ghost
+  namespace: ghost
+spec:
+  selector:
+    app: ghost
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: 2368
+---
+# Ghost Ingress with Let's Encrypt
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ghost
+  namespace: ghost
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - news.server.robertgogete.eu
+      secretName: ghost-tls
+  rules:
+    - host: news.server.robertgogete.eu
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ghost
+                port:
+                  number: 80
