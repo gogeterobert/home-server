@@ -15,14 +15,15 @@ data:
           baseURL: "http://ollama:11434/v1"
           models:
             default:
-              - "qwen2.5:14b-instruct-q4_K_M"
+              - "qwen2.5:14b-instruct-q4_k_m"
             fetch: false
           titleConvo: true
-          titleModel: "qwen2.5:14b-instruct-q4_K_M"
+          titleModel: "qwen2.5:14b-instruct-q4_k_m"
           summarize: false
-          summaryModel: "qwen2.5:14b-instruct-q4_K_M"
+          summaryModel: "qwen2.5:14b-instruct-q4_k_m"
           forcePrompt: false
           modelDisplayLabel: "Ollama"
+          dropParams: ["top_p"]
 ---
 apiVersion: v1
 kind: Service
