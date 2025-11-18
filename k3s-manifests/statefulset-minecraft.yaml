@@ -6,7 +6,7 @@
       app: mc-example
     name: mc-example
   spec:
-    replicas: 1
+    replicas: 0
     serviceName: mc-example
     selector:
       matchLabels:

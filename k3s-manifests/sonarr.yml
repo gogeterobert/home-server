@@ -120,7 +120,7 @@ metadata:
   name: media-stack
   namespace: media-stack
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: media-stack

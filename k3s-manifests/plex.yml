@@ -53,7 +53,7 @@ metadata:
   name: plex
   namespace: plex
 spec:
-  replicas: 1
+  replicas: 0
   strategy:
     type: Recreate
   selector:

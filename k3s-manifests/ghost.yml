@@ -50,7 +50,7 @@ metadata:
   name: ghost
   namespace: ghost
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: ghost
