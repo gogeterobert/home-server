@@ -1,0 +1,280 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: librechat-config
+  namespace: ai
+data:
+  librechat.yaml: |
+    version: 1.1.5
+    cache: true
+    
+    endpoints:
+      custom:
+        - name: "Ollama"
+          apiKey: "ollama"
+          baseURL: "http://ollama:11434/v1"
+          models:
+            default:
+              - "qwen2.5:14b-instruct-q4_K_M"
+            fetch: false
+          titleConvo: true
+          titleModel: "qwen2.5:14b-instruct-q4_K_M"
+          summarize: false
+          summaryModel: "qwen2.5:14b-instruct-q4_K_M"
+          forcePrompt: false
+          modelDisplayLabel: "Ollama"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: librechat-mongodb
+  namespace: ai
+spec:
+  type: ClusterIP
+  ports:
+    - port: 27017
+      targetPort: 27017
+      protocol: TCP
+      name: mongodb
+  selector:
+    app: librechat-mongodb
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: librechat-mongodb-pv
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  local:
+    path: /storage/seagate-1tb/ai/librechat-mongodb
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - nostalgiagame.go.ro
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: librechat-mongodb-pvc
+  namespace: ai
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: manual
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: librechat-mongodb
+  namespace: ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: librechat-mongodb
+  template:
+    metadata:
+      labels:
+        app: librechat-mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo:7
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongodb-storage
+              mountPath: /data/db
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: librechat
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: {{ librechat_mongodb_password | quote }}
+      volumes:
+        - name: mongodb-storage
+          persistentVolumeClaim:
+            claimName: librechat-mongodb-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: librechat
+  namespace: ai
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3080
+      targetPort: 3080
+      protocol: TCP
+      name: http
+  selector:
+    app: librechat
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: librechat-pv
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  local:
+    path: /storage/seagate-1tb/ai/librechat
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - nostalgiagame.go.ro
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: librechat-pvc
+  namespace: ai
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: manual
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: librechat
+  namespace: ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: librechat
+  template:
+    metadata:
+      labels:
+        app: librechat
+    spec:
+      containers:
+        - name: librechat
+          image: ghcr.io/danny-avila/librechat:latest
+          ports:
+            - containerPort: 3080
+          volumeMounts:
+            - name: librechat-storage
+              mountPath: /app/client/public/images
+            - name: librechat-config
+              mountPath: /app/librechat.yaml
+              subPath: librechat.yaml
+          env:
+            - name: HOST
+              value: "0.0.0.0"
+            - name: PORT
+              value: "3080"
+            - name: MONGO_URI
+              value: "mongodb://librechat:{{ librechat_mongodb_password }}@librechat-mongodb:27017/LibreChat?authSource=admin"
+            - name: DOMAIN_CLIENT
+              value: "https://chat.server.robertgogete.eu"
+            - name: DOMAIN_SERVER
+              value: "https://chat.server.robertgogete.eu"
+            - name: JWT_SECRET
+              value: {{ librechat_jwt_secret | quote }}
+            - name: JWT_REFRESH_SECRET
+              value: {{ librechat_jwt_refresh_secret | quote }}
+            - name: CREDS_KEY
+              value: {{ librechat_creds_key | quote }}
+            - name: CREDS_IV
+              value: {{ librechat_creds_iv | quote }}
+            - name: ALLOW_REGISTRATION
+              value: "true"
+            - name: ALLOW_SOCIAL_LOGIN
+              value: "false"
+            - name: ALLOW_SOCIAL_REGISTRATION
+              value: "false"
+            - name: SESSION_EXPIRY
+              value: "900000"
+            - name: REFRESH_TOKEN_EXPIRY
+              value: "604800000"
+            - name: CONFIG_PATH
+              value: "/app/librechat.yaml"
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 2000m
+              memory: 4Gi
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3080
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+      volumes:
+        - name: librechat-storage
+          persistentVolumeClaim:
+            claimName: librechat-pvc
+        - name: librechat-config
+          configMap:
+            name: librechat-config
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: librechat
+  namespace: ai
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - chat.server.robertgogete.eu
+      secretName: librechat-tls
+  rules:
+    - host: chat.server.robertgogete.eu
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: librechat
+                port:
+                  number: 3080
