@@ -17,13 +17,12 @@ data:
             default:
               - "qwen2.5:14b-instruct-q4_K_M"
             fetch: false
-          titleConvo: true
-          titleModel: "qwen2.5:14b-instruct-q4_K_M"
+          titleConvo: false
           summarize: false
-          summaryModel: "qwen2.5:14b-instruct-q4_K_M"
           forcePrompt: false
           modelDisplayLabel: "Ollama"
           dropParams: ["top_p"]
+          streamRate: 20
 ---
 apiVersion: v1
 kind: Service
@@ -226,6 +225,8 @@ spec:
               value: "604800000"
             - name: CONFIG_PATH
               value: "/app/librechat.yaml"
+            - name: OPENAI_TIMEOUT_MS
+              value: "300000"
           resources:
             requests:
               cpu: 200m
