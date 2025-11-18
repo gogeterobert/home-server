@@ -107,9 +107,11 @@ spec:
               memory: 2Gi
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
-              value: librechat
+              value: admin
             - name: MONGO_INITDB_ROOT_PASSWORD
               value: {{ librechat_mongodb_password | quote }}
+            - name: MONGO_INITDB_DATABASE
+              value: LibreChat
       volumes:
         - name: mongodb-storage
           persistentVolumeClaim:
@@ -198,7 +200,7 @@ spec:
             - name: PORT
               value: "3080"
             - name: MONGO_URI
-              value: "mongodb://librechat:{{ librechat_mongodb_password }}@librechat-mongodb:27017/LibreChat?authSource=admin"
+              value: "mongodb://admin:{{ librechat_mongodb_password }}@librechat-mongodb:27017/LibreChat?authSource=admin"
             - name: DOMAIN_CLIENT
               value: "https://chat.server.robertgogete.eu"
             - name: DOMAIN_SERVER
