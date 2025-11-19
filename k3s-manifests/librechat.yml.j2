@@ -12,17 +12,21 @@ data:
       custom:
         - name: "Ollama"
           apiKey: "ollama"
-          baseURL: "http://ollama:11434/v1/"
+          baseURL: "http://ollama:11434/v1"
           models:
             default:
               - "llama3.1:8b"
             fetch: false
-          titleConvo: true
-          titleModel: "current_model"
+          titleConvo: false
           summarize: false
-          summaryModel: "current_model"
           forcePrompt: false
           modelDisplayLabel: "Ollama"
+          addParams:
+            stream: true
+          dropParams:
+            - "user"
+            - "frequency_penalty"
+            - "presence_penalty"
 ---
 apiVersion: v1
 kind: Service
@@ -233,6 +237,10 @@ spec:
               value: "true"
             - name: DEBUG_OPENAI
               value: "true"
+            - name: NODE_OPTIONS
+              value: "--trace-warnings"
+            - name: LOG_LEVEL
+              value: "debug"
           resources:
             requests:
               cpu: 200m
