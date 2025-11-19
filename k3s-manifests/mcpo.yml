@@ -8,9 +8,9 @@ data:
   config.json: |
     {
       "mcpServers": {
-        "weather": {
-          "command": "uvx",
-          "args": ["mcp-server-openmeteo"] 
+        "fetch": {
+          "command": "npx",
+          "args": ["-y", "@modelcontextprotocol/server-fetch"]
         }
       }
     }
