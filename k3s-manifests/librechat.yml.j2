@@ -23,6 +23,8 @@ data:
           modelDisplayLabel: "Ollama"
           dropParams: ["top_p"]
           streamRate: 20
+          # Increase timeout for Ollama (5 minutes)
+          timeout: 300000
 ---
 apiVersion: v1
 kind: Service
@@ -227,6 +229,12 @@ spec:
               value: "/app/librechat.yaml"
             - name: OPENAI_TIMEOUT_MS
               value: "300000"
+            - name: DEBUG_LOGGING
+              value: "true"
+            - name: DEBUG_CONSOLE
+              value: "true"
+            - name: DEBUG_OPENAI
+              value: "true"
           resources:
             requests:
               cpu: 200m
