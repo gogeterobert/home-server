@@ -82,19 +82,15 @@
         nextcloud_postgres_password: "{{ lookup('env', 'NEXTCLOUD_POSTGRES_PASSWORD') }}"
         nextcloud_admin_password: "{{ lookup('env', 'NEXTCLOUD_ADMIN_PASSWORD') }}"
 
-    - name: Render the LibreChat manifest
+    - name: Render the Open WebUI manifest
       ansible.builtin.template:
-        src: k3s-manifests/librechat.yml.j2
-        dest: "{{ temp_dir.path }}/librechat.yml"
+        src: k3s-manifests/openwebui.yml.j2
+        dest: "{{ temp_dir.path }}/openwebui.yml"
         owner: root
         group: root
         mode: "0644"
       vars:
-        librechat_mongodb_password: "{{ lookup('env', 'LIBRECHAT_MONGODB_PASSWORD') }}"
-        librechat_jwt_secret: "{{ lookup('env', 'LIBRECHAT_JWT_SECRET') }}"
-        librechat_jwt_refresh_secret: "{{ lookup('env', 'LIBRECHAT_JWT_REFRESH_SECRET') }}"
-        librechat_creds_key: "{{ lookup('env', 'LIBRECHAT_CREDS_KEY') }}"
-        librechat_creds_iv: "{{ lookup('env', 'LIBRECHAT_CREDS_IV') }}"
+        openwebui_secret_key: "{{ lookup('env', 'OPENWEBUI_SECRET_KEY') }}"
 
     - name: Apply cert-manager manifest
       command: kubectl apply -f "{{ temp_dir.path }}/cert-manager.yaml"
