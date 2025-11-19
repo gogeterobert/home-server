@@ -102,6 +102,19 @@
       vars:
         openwebui_secret_key: "{{ lookup('env', 'OPENWEBUI_SECRET_KEY') }}"
 
+    - name: Render the LibreChat manifest
+      ansible.builtin.template:
+        src: k3s-manifests/librechat.yml.j2
+        dest: "{{ temp_dir.path }}/librechat.yml"
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        librechat_jwt_secret: "{{ lookup('env', 'LIBRECHAT_JWT_SECRET') }}"
+        librechat_jwt_refresh_secret: "{{ lookup('env', 'LIBRECHAT_JWT_REFRESH_SECRET') }}"
+        librechat_creds_key: "{{ lookup('env', 'LIBRECHAT_CREDS_KEY') }}"
+        librechat_creds_iv: "{{ lookup('env', 'LIBRECHAT_CREDS_IV') }}"
+
     - name: Apply cert-manager manifest
       command: kubectl apply -f "{{ temp_dir.path }}/cert-manager.yaml"
 
