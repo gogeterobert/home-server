@@ -198,4 +198,5 @@ Date: {day['date']}
 
 if __name__ == "__main__":
     # Run the MCP server with streamable HTTP transport
-    mcp.run(transport="streamable-http", port=8000)
+    # Bind to 0.0.0.0 to allow connections from other pods
+    mcp.run(transport="streamable-http", host="0.0.0.0", port=8000)
