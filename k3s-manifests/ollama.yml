@@ -91,6 +91,8 @@ spec:
               value: "*"
             - name: OLLAMA_DEBUG
               value: "1"
+            - name: OLLAMA_VERBOSE
+              value: "1"
           lifecycle:
             postStart:
               exec:
@@ -100,6 +102,7 @@ spec:
                   - |
                     sleep 10
                     ollama pull llama3.1:8b || true
+                    ollama pull qwen2.5:7b || true
       volumes:
         - name: ollama-storage
           persistentVolumeClaim:
