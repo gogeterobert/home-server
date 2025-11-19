@@ -7,23 +7,28 @@ data:
   librechat.yaml: |
     version: 1.1.5
     cache: true
-    
+
     endpoints:
       custom:
         - name: "Ollama"
           apiKey: "ollama"
-          baseURL: "http://ollama:11434/v1"
+          baseURL: "http://ollama:11434"
+          fetch: false
+          model: "qwen2.5:14b-instruct-q4_K_M"
           models:
             default:
-              - "qwen2.5:14b-instruct-q4_K_M"
-            fetch: false
+              - qwen2.5:14b-instruct-q4_K_M
           titleConvo: false
           summarize: false
           forcePrompt: false
           modelDisplayLabel: "Ollama"
-          dropParams: ["top_p"]
+          dropParams:
+            - temperature
+            - top_p
+            - presence_penalty
+            - frequency_penalty
+            - response_format
           streamRate: 20
-          # Increase timeout for Ollama (5 minutes)
           timeout: 300000
 ---
 apiVersion: v1
