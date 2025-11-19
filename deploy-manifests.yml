@@ -92,6 +92,16 @@
       vars:
         openwebui_secret_key: "{{ lookup('env', 'OPENWEBUI_SECRET_KEY') }}"
 
+    - name: Render the MCP Weather manifest
+      ansible.builtin.template:
+        src: k3s-manifests/mcp-weather.yml.j2
+        dest: "{{ temp_dir.path }}/mcp-weather.yml"
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        openweather_api_key: "{{ lookup('env', 'OPENWEATHER_API_KEY') }}"
+
     - name: Apply cert-manager manifest
       command: kubectl apply -f "{{ temp_dir.path }}/cert-manager.yaml"
 

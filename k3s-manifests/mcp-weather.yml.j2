@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mcp-weather-secret
+  namespace: ai
+type: Opaque
+stringData:
+  OPEN_WEATHER_API_KEY: "{{ openweather_api_key }}"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-weather
+  namespace: ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mcp-weather
+  template:
+    metadata:
+      labels:
+        app: mcp-weather
+    spec:
+      containers:
+        - name: mcp-weather
+          image: ghcr.io/mcp-getgather/api-weather-mcp:latest
+          ports:
+            - containerPort: 8000
+              name: http
+          env:
+            - name: OPEN_WEATHER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mcp-weather-secret
+                  key: OPEN_WEATHER_API_KEY
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcp-weather
+  namespace: ai
+spec:
+  type: ClusterIP
+  selector:
+    app: mcp-weather
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+      name: http
