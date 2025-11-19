@@ -11,19 +11,18 @@ data:
     endpoints:
       custom:
         - name: "Ollama"
-          type: "ollama"
           apiKey: "ollama"
-          baseURL: "http://ollama:11434"
+          baseURL: "http://ollama:11434/v1/"
           models:
             default:
               - "qwen2.5:14b-instruct-q4_K_M"
             fetch: false
-          mode: "chat"
+          titleConvo: true
+          titleModel: "current_model"
           summarize: false
-          dropParams: ["top_p"]
+          summaryModel: "current_model"
           forcePrompt: false
-          streamRate: 20
-          timeout: 300000
+          modelDisplayLabel: "Ollama"
 ---
 apiVersion: v1
 kind: Service
