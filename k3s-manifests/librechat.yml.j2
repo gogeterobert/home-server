@@ -27,6 +27,10 @@ data:
             - "user"
             - "frequency_penalty"
             - "presence_penalty"
+            - "stop"
+          headers:
+            HTTP-Referer: "http://localhost:3080"
+            X-Title: "LibreChat"
 ---
 apiVersion: v1
 kind: Service
@@ -241,6 +245,10 @@ spec:
               value: "--trace-warnings"
             - name: LOG_LEVEL
               value: "debug"
+            - name: NODE_TLS_REJECT_UNAUTHORIZED
+              value: "0"
+            - name: CONSOLE_JSON
+              value: "false"
           resources:
             requests:
               cpu: 200m
