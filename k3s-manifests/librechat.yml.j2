@@ -11,23 +11,17 @@ data:
     endpoints:
       custom:
         - name: "Ollama"
+          type: "ollama"
           apiKey: "ollama"
           baseURL: "http://ollama:11434"
-          fetch: false
-          model: "qwen2.5:14b-instruct-q4_K_M"
           models:
             default:
-              - qwen2.5:14b-instruct-q4_K_M
-          titleConvo: false
+              - "qwen2.5:14b-instruct-q4_K_M"
+            fetch: false
+          mode: "chat"
           summarize: false
+          dropParams: ["top_p"]
           forcePrompt: false
-          modelDisplayLabel: "Ollama"
-          dropParams:
-            - temperature
-            - top_p
-            - presence_penalty
-            - frequency_penalty
-            - response_format
           streamRate: 20
           timeout: 300000
 ---
