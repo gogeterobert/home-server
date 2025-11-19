@@ -48,6 +48,16 @@
       vars:
         DOCKERCONFIGJSON_B64: "{{ lookup('env', 'DOCKERCONFIGJSON_B64') }}"
 
+    - name: Render the registry ai auth docker json
+      ansible.builtin.template:
+        src: k3s-manifests/registry-image-creds-ai.yaml.j2
+        dest: "{{ temp_dir.path }}/registry-image-creds-ai.yaml"
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        DOCKERCONFIGJSON_B64: "{{ lookup('env', 'DOCKERCONFIGJSON_B64') }}"
+
     - name: Render the CurseForge API key secret
       ansible.builtin.template:
         src: k3s-manifests/secret-cf-api-key.yaml.j2
