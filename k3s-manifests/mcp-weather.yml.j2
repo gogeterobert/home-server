@@ -1,3 +1,12 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mcp-weather-secret
+  namespace: ai
+type: Opaque
+stringData:
+  OWM_API_KEY: "{{ openweather_api_key }}"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,12 +24,15 @@ spec:
     spec:
       containers:
         - name: weather-mcp
-          # This image natively supports Streamable HTTP
-          image: dog830228/mcp_weather_server:latest
-          # We tell it to run in 'streamable-http' mode instead of 'stdio'
-          args: ["--mode", "streamable-http", "--port", "8080", "--host", "0.0.0.0"]
+          image: mcp/openweather:latest
           ports:
             - containerPort: 8080
+          env:
+            - name: OWM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mcp-weather-secret
+                  key: OWM_API_KEY
           resources:
             requests:
               cpu: 50m
