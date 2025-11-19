@@ -95,7 +95,7 @@ spec:
                   - -c
                   - |
                     sleep 10
-                    ollama pull qwen2.5:14b-instruct-q4_K_M || true
+                    ollama pull llama3.1:8b || true
       volumes:
         - name: ollama-storage
           persistentVolumeClaim:
