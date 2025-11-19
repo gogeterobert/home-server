@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather-mcp
+  namespace: ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weather-mcp
+  template:
+    metadata:
+      labels:
+        app: weather-mcp
+    spec:
+      containers:
+        - name: weather-mcp
+          # This image natively supports Streamable HTTP
+          image: dog830228/mcp_weather_server:latest
+          # We tell it to run in 'streamable-http' mode instead of 'stdio'
+          args: ["--mode", "streamable-http", "--port", "8080", "--host", "0.0.0.0"]
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: weather-mcp
+  namespace: ai
+spec:
+  type: ClusterIP
+  selector:
+    app: weather-mcp
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
