@@ -33,6 +33,7 @@ jobs:
           LIBRECHAT_JWT_REFRESH_SECRET: ${{ secrets.LIBRECHAT_JWT_REFRESH_SECRET }}
           LIBRECHAT_CREDS_KEY: ${{ secrets.LIBRECHAT_CREDS_KEY }}
           LIBRECHAT_CREDS_IV: ${{ secrets.LIBRECHAT_CREDS_IV }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           echo "[servers]" > inventory.ini
           echo "k3s-master ansible_host=${{ secrets.SERVER_IP }} ansible_user=${{ secrets.SERVER_USER }} ansible_ssh_pass=${{ secrets.SERVER_PASSWORD }} ansible_become_pass=${{ secrets.SERVER_PASSWORD }}" >> inventory.ini
