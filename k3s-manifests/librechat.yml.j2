@@ -28,6 +28,9 @@ data:
       weather-mcp:
         type: streamable-http
         url: http://weather-mcp.ai.svc.cluster.local:8000/mcp
+      chart-mcp:
+        type: streamable-http
+        url: http://chart-mcp.ai.svc.cluster.local:1122/mcp
 ---
 apiVersion: v1
 kind: Secret

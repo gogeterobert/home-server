@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chart-mcp
+  namespace: ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chart-mcp
+  template:
+    metadata:
+      labels:
+        app: chart-mcp
+    spec:
+      containers:
+        - name: chart-mcp
+          image: registry.server.robertgogete.eu/mcp-chart:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 1122
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 512Mi
+      imagePullSecrets:
+        - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chart-mcp
+  namespace: ai
+spec:
+  type: ClusterIP
+  selector:
+    app: chart-mcp
+  ports:
+    - protocol: TCP
+      port: 1122
+      targetPort: 1122
