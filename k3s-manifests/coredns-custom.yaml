@@ -21,6 +21,7 @@ data:
             192.168.1.186 drive.server.robertgogete.eu
             192.168.1.186 news.server.robertgogete.eu
             192.168.1.186 chat.server.robertgogete.eu
+            192.168.1.186 n8n.server.robertgogete.eu
             2a02:2f00:409:fe00:c665:16ff:feb7:4000 nostalgiagame.go.ro
             2a02:2f00:409:fe00:c665:16ff:feb7:4000 grafana.server.robertgogete.eu
             2a02:2f00:409:fe00:c665:16ff:feb7:4000 prometheus.server.robertgogete.eu
@@ -32,6 +33,7 @@ data:
             2a02:2f00:409:fe00:c665:16ff:feb7:4000 drive.server.robertgogete.eu
             2a02:2f00:409:fe00:c665:16ff:feb7:4000 news.server.robertgogete.eu
             2a02:2f00:409:fe00:c665:16ff:feb7:4000 chat.server.robertgogete.eu
+            2a02:2f00:409:fe00:c665:16ff:feb7:4000 n8n.server.robertgogete.eu
             fallthrough
         }
         forward . /etc/resolv.conf
