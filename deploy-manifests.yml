@@ -116,6 +116,16 @@
         librechat_creds_iv: "{{ lookup('env', 'LIBRECHAT_CREDS_IV') }}"
         anthropic_api_key: "{{ lookup('env', 'ANTHROPIC_API_KEY') }}"
 
+    - name: Render the n8n manifest
+      ansible.builtin.template:
+        src: k3s-manifests/n8n.yml.j2
+        dest: "{{ temp_dir.path }}/n8n.yml"
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        n8n_encryption_key: "{{ lookup('env', 'N8N_ENCRYPTION_KEY') }}"
+
     - name: Apply cert-manager manifest
       command: kubectl apply -f "{{ temp_dir.path }}/cert-manager.yaml"
 
