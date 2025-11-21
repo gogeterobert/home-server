@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-mcp
+  namespace: ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azure-mcp
+  template:
+    metadata:
+      labels:
+        app: azure-mcp
+    spec:
+      containers:
+        - name: azure-mcp
+          image: mcr.microsoft.com/azure-sdk/azure-mcp:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: AZURE_TENANT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: azure-mcp-secrets
+                  key: AZURE_TENANT_ID
+            - name: AZURE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: azure-mcp-secrets
+                  key: AZURE_CLIENT_ID
+            - name: AZURE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: azure-mcp-secrets
+                  key: AZURE_CLIENT_SECRET
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 512Mi
+      imagePullSecrets:
+        - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azure-mcp
+  namespace: ai
+spec:
+  type: ClusterIP
+  selector:
+    app: azure-mcp
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
