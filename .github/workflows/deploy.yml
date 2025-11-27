@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Validate Secrets
         run: test -n "${{ secrets.SERVER_IP }}" && test -n "${{ secrets.SERVER_USER }}" && test -n "${{ secrets.SERVER_PASSWORD }}"
