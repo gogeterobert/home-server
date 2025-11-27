@@ -15,10 +15,10 @@ spec:
     spec:
       containers:
         - name: azure-mcp
-          image: mcr.microsoft.com/azure-sdk/azure-mcp:latest
+          image: registry.server.robertgogete.eu/adx-mcp-server:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8080
+            - containerPort: 3000
           env:
             - name: AZURE_TENANT_ID
               valueFrom:
@@ -35,6 +35,22 @@ spec:
                 secretKeyRef:
                   name: azure-mcp-secrets
                   key: AZURE_CLIENT_SECRET
+            - name: ADX_MCP_SERVER_TRANSPORT
+              value: http
+            - name: ADX_MCP_BIND_HOST
+              value: "0.0.0.0"
+            - name: ADX_MCP_BIND_PORT
+              value: "3000"
+            - name: ADX_CLUSTER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: azure-mcp-secrets
+                  key: ADX_CLUSTER_URL
+            - name: ADX_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: azure-mcp-secrets
+                  key: ADX_DATABASE
           resources:
             requests:
               cpu: 50m
@@ -56,5 +72,5 @@ spec:
     app: azure-mcp
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
+      port: 3000
+      targetPort: 3000
