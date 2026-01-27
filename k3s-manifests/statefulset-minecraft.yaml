@@ -6,7 +6,7 @@
       app: mc-example
     name: mc-example
   spec:
-    replicas: 0
+    replicas: 1
     serviceName: mc-example
     selector:
       matchLabels:
@@ -28,7 +28,7 @@
               - name: TYPE
                 value: "AUTO_CURSEFORGE"
               - name: CF_PAGE_URL
-                value: "https://www.curseforge.com/minecraft/modpacks/all-the-mods-10-sky"
+                value: "https://www.curseforge.com/minecraft/modpacks/all-the-mods-10"
               - name: CF_OVERRIDES_EXCLUSIONS
                 value: "mods/rgp_client*.jar"
               - name: CF_API_KEY
@@ -99,5 +99,5 @@
       accessModes:
         - ReadWriteOnce
       hostPath:
-        path: "/mnt/data/mc-example"
+        path: "/storage/seagate-1tb/minecraft"
       persistentVolumeReclaimPolicy: Retain
