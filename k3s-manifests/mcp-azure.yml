@@ -4,7 +4,7 @@ metadata:
   name: azure-mcp
   namespace: ai
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: azure-mcp

@@ -4,7 +4,7 @@ metadata:
   name: weather-mcp
   namespace: ai
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: weather-mcp
