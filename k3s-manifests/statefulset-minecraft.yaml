@@ -72,7 +72,7 @@
             - ReadWriteOnce
           resources:
             requests:
-              storage: 5Gi
+              storage: 20Gi
 ---
     apiVersion: v1
     kind: Service
@@ -88,16 +88,3 @@
       selector:
         app: mc-example
       type: NodePort
----
-    apiVersion: v1
-    kind: PersistentVolume
-    metadata:
-      name: data-mc-example-pv-v2
-    spec:
-      capacity:
-        storage: 5Gi
-      accessModes:
-        - ReadWriteOnce
-      hostPath:
-        path: "/storage/seagate-1tb/minecraft"
-      persistentVolumeReclaimPolicy: Retain
