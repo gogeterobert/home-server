@@ -72,8 +72,9 @@ spec:
               mountPath: /media
       volumes:
         - name: config
-          persistentVolumeClaim:
-            claimName: plex-pvc
+          hostPath:
+            path: /storage/seagate-1tb/plex-config
+            type: DirectoryOrCreate
         - name: media
           hostPath:
             path: /storage/seagate-1tb/media
