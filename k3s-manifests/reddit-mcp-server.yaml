@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reddit-mcp
+  namespace: ai
+  labels:
+    app: reddit-mcp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reddit-mcp
+  template:
+    metadata:
+      labels:
+        app: reddit-mcp
+    spec:
+      containers:
+        - name: reddit-mcp
+          image: registry.server.robertgogete.eu/reddit-mcp:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reddit-mcp
+  namespace: ai
+spec:
+  selector:
+    app: reddit-mcp
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
