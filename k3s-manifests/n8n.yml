@@ -60,13 +60,13 @@ spec:
             - containerPort: 5678
           env:
             - name: N8N_HOST
-              value: "n8n.server.robertgogete.eu"
+              value: "ai.robertgogete.eu"
             - name: N8N_PORT
               value: "5678"
             - name: N8N_PROTOCOL
               value: "https"
             - name: WEBHOOK_URL
-              value: "https://n8n.server.robertgogete.eu/"
+              value: "https://ai.robertgogete.eu/"
             - name: GENERIC_TIMEZONE
               value: "Europe/Bucharest"
             - name: N8N_ENCRYPTION_KEY
@@ -83,7 +83,7 @@ spec:
             - name: N8N_GIT_NODE_DISABLE_BARE_REPOS
               value: "true"
             - name: N8N_EDITOR_BASE_URL
-              value: "https://n8n.server.robertgogete.eu"
+              value: "https://ai.robertgogete.eu"
             - name: N8N_TRUST_PROXY
               value: "true"
           volumeMounts:
@@ -142,10 +142,10 @@ spec:
   ingressClassName: traefik
   tls:
     - hosts:
-        - n8n.server.robertgogete.eu
+        - ai.robertgogete.eu
       secretName: n8n-tls
   rules:
-    - host: n8n.server.robertgogete.eu
+    - host: ai.robertgogete.eu
       http:
         paths:
           - path: /
