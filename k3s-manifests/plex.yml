@@ -61,6 +61,8 @@ spec:
               value: "Etc/UTC"
             - name: VERSION
               value: "docker"
+            - name: PLEX_TRANSCODE_DIR
+              value: /transcode
           ports:
             - name: http
               containerPort: 32400
@@ -70,6 +72,8 @@ spec:
               mountPath: /config
             - name: media
               mountPath: /media
+            - name: transcode
+              mountPath: /transcode
       volumes:
         - name: config
           hostPath:
@@ -79,6 +83,9 @@ spec:
           hostPath:
             path: /storage/seagate-1tb/media
             type: DirectoryOrCreate
+        - name: transcode
+          persistentVolumeClaim:
+            claimName: plex-transcode-pvc
 ---
 apiVersion: v1
 kind: Service

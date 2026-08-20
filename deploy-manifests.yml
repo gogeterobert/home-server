@@ -92,16 +92,6 @@
         librechat_creds_iv: "{{ lookup('env', 'LIBRECHAT_CREDS_IV') }}"
         anthropic_api_key: "{{ lookup('env', 'ANTHROPIC_API_KEY') }}"
 
-    - name: Render the n8n manifest
-      ansible.builtin.template:
-        src: k3s-manifests/n8n.yml.j2
-        dest: "{{ temp_dir.path }}/n8n.yml"
-        owner: root
-        group: root
-        mode: "0644"
-      vars:
-        n8n_encryption_key: "{{ lookup('env', 'N8N_ENCRYPTION_KEY') }}"
-
     - name: Apply cert-manager manifest
       command: kubectl apply -f "{{ temp_dir.path }}/cert-manager.yaml"
 
@@ -119,7 +109,12 @@
         -n longhorn-system --timeout=300s
 
     - name: Apply K3s Manifests
-      command: kubectl apply -f "{{ temp_dir.path }}/" --prune --all
+      # NOTE: deliberately no `--prune --all`. Pruning deletes every resource the
+      # applied set does not contain, which would remove Secrets created directly
+      # in the cluster (for example n8n-secrets) and workloads that have no
+      # manifest here. Removing a manifest from this repo therefore does NOT
+      # delete it from the cluster - delete such resources explicitly.
+      command: kubectl apply -f "{{ temp_dir.path }}/"
 
     - name: Remove temporary directory
       ansible.builtin.file:
