@@ -130,3 +130,7 @@ before overwriting either. Do not assume the committed file wins.
 - Several manifests use `:latest` with `imagePullPolicy: Always`. That makes deploys
   non-reproducible and lets a workload jump major versions on any pod recreation;
   it has already caused a multi-week outage here.
+- **Node-level configuration is not in this repo.** `/etc/fstab` and the
+  `k3s.service` drop-in that makes k3s wait for the external drive live only on the
+  node. This repo describes the cluster, not the host. See `k3s-node-storage-boot`
+  for what that host state is and why it matters.

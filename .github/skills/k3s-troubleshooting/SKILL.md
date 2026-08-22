@@ -94,6 +94,10 @@ ssh "$K3S_SSH_HOST" 'kubectl -n longhorn-system get pods'
   without an explicit `storageClassName` may have landed on the wrong one.
 - `longhorn-seagate` does not allow volume expansion.
 - A PVC stuck `Pending` with `WaitForFirstConsumer` is normal until a pod schedules.
+- A third class of volume exists: `storageClassName: manual` PVs on host paths under
+  `/storage/seagate-1tb` (`n8n-pv`, `plex-pv`, `qbittorrent-downloads-pv`). These are
+  neither Longhorn nor `local-path`. If one of these workloads starts with empty or
+  stale data, the disk was probably not mounted — see `k3s-node-storage-boot`.
 
 **Never delete a PVC or Longhorn volume to "reset" a stuck workload without explicit
 operator confirmation.** Game saves and application databases live on them, and
@@ -137,6 +141,21 @@ These need root, so hand them to the operator:
 ssh -t "$K3S_SSH_HOST" 'sudo systemctl status k3s'
 ssh -t "$K3S_SSH_HOST" 'sudo journalctl -u k3s -n 200 --no-pager'
 ```
+
+### k3s itself will not start
+
+Check the storage dependency **first**. k3s has a `RequiresMountsFor=` drop-in on
+`/storage/seagate-1tb`, so if that external USB drive is missing or fails to mount,
+k3s stays `inactive (dead)` on purpose and every workload is down — including ones
+unrelated to that disk.
+
+```bash
+ssh "$K3S_SSH_HOST" 'findmnt /storage/seagate-1tb || echo "NOT MOUNTED"'
+```
+
+If the node is unreachable entirely after a reboot, suspect emergency mode (no
+networking) rather than a dead machine. Both cases, and the recovery steps, are in
+the **`k3s-node-storage-boot`** skill.
 
 Disk pressure affects everything on a single node:
 
